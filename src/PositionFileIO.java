@@ -17,43 +17,76 @@ public class PositionFileIO {
 	 * @param positionsFile: name of file to read positions from
 	 * return array list of positions that are read in from the user's portfolio
 	 */
-	public ArrayList<Position> readpositionCSV(String fileName) {
-		ArrayList <Position> positions = new ArrayList<Position>();
-		File positionsFile = new File(fileName);
-		YahooQuote getPrice = new YahooQuote();
-		//overall try catch to read in the elements on the .csv file
-		try {
-			Scanner fileReader = new Scanner(positionsFile);
-			fileReader.nextLine(); // skip title row
-			while (fileReader.hasNextLine()) {
-				String line = fileReader.nextLine();
-				String[] lineComponents = line.split(",");
-				
-				//System.out.println(Arrays.toString(lineComponents));
-				
-				String symbol = lineComponents[0];
-				double shares = 0;
-				double avgCost = 1.0;
-				double lastPrice = 1.0;
-				
-				try {
-					shares = Double.parseDouble(lineComponents[1]);
-				} catch (NumberFormatException e) {System.out.println("Wrong format");}
-				try {
-					avgCost = Double.parseDouble(lineComponents[2]);
-				} catch (NumberFormatException e) {System.out.println("Wrong format");}
+	/*public ArrayList<Position> readpositionCSV(String fileName) {
+	ArrayList <Position> positions = new ArrayList<Position>();
+	File positionsFile = new File(fileName);
+	YahooQuote getPrice = new YahooQuote();
+	//overall try catch to read in the elements on the .csv file
+	try {
+		Scanner fileReader = new Scanner(positionsFile);
+		fileReader.nextLine(); // skip title row
+		while (fileReader.hasNextLine()) {
+			String line = fileReader.nextLine();
+			String[] lineComponents = line.split(",");
+			
+			//System.out.println(Arrays.toString(lineComponents));
+			
+			String symbol = lineComponents[0];
+			double shares = 0;
+			double avgCost = 1.0;
+			double lastPrice = 1.0;
+			
+			try {
+				shares = Double.parseDouble(lineComponents[1]);
+			} catch (NumberFormatException e) {System.out.println("Wrong format");}
+			try {
+				avgCost = Double.parseDouble(lineComponents[2]);
+			} catch (NumberFormatException e) {System.out.println("Wrong format");}
 
-				Position position = new Position(symbol, shares, avgCost);
-								
-				positions.add(position);
-			}
-			fileReader.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace(); 
+			Position position = new Position(symbol, shares, avgCost);
+							
+			positions.add(position);
 		}
-		return positions;
+		fileReader.close();
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace(); 
 	}
+	return positions;
+}*/
+
+public HashMap<String, Double[]> readpositionCSV(String fileName) {
+	HashMap <String, Double[]> userPortfolio = new HashMap <String, Double[]>();
+	File positionsFile = new File(fileName);
+	YahooQuote getPrice = new YahooQuote();
+	//overall try catch to read in the elements on the .csv file
+	try {
+		Scanner fileReader = new Scanner(positionsFile);
+		fileReader.nextLine();//skip title row
+		while (fileReader.hasNextLine()) {
+			String line = fileReader.nextLine();
+			String[] lineComponents = line.split(",");
+			
+			String symbol = lineComponents[0];
+			double shares = 0;
+			double avgCost = 1.0;
+			double lastPrice = 1.0;
+			
+			
+			try {
+				shares = Double.parseDouble(lineComponents[1]);
+			} catch (NumberFormatException e) {System.out.println("Wrong format");}
+			try {
+				avgCost = Double.parseDouble(lineComponents[2]);
+			} catch (NumberFormatException e) {System.out.println("Wrong format");}
+			
+			Double[] positionValues = {shares, avgCost};
+			userPortfolio.put(symbol, positionValues);
+		}
+		fileReader.close();
+	} catch (FileNotFoundException e) {e.printStackTrace();}
+	return userPortfolio;
+}
 	/**
 	 *method to write data to a file 
 	 *@param fileName: name of file to write new positions to the positions file
