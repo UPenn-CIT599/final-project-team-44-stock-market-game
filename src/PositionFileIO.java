@@ -17,7 +17,7 @@ public class PositionFileIO {
 	 * @param positionsFile: name of file to read positions from
 	 * return array list of positions that are read in from the user's portfolio
 	 */
-	/*public ArrayList<Position> readpositionCSV(String fileName) {
+	public ArrayList<Position> readpositionCSV(String fileName) {
 	ArrayList <Position> positions = new ArrayList<Position>();
 	File positionsFile = new File(fileName);
 	YahooQuote getPrice = new YahooQuote();
@@ -53,9 +53,9 @@ public class PositionFileIO {
 		e.printStackTrace(); 
 	}
 	return positions;
-}*/
+}
 
-public HashMap<String, Double[]> readpositionCSV(String fileName) {
+public HashMap<String, Double[]> readpositionCSVHM(String fileName) {
 	HashMap <String, Double[]> userPortfolio = new HashMap <String, Double[]>();
 	File positionsFile = new File(fileName);
 	YahooQuote getPrice = new YahooQuote();
