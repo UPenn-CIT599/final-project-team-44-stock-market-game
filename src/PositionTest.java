@@ -57,14 +57,26 @@ class PositionTest {
 	}
 	
 	@Test
+	public void testSetShares() {
+		position.setShares(10);
+		assertEquals(10, position.getShares());
+	}
+	
+	@Test
+	public void testSetAverageCost() {
+		position.setAverageCost(7.0);
+		assertEquals(7, position.getAverageCost());
+	}
+	
+	@Test
 	public void testToString() {
-		assertEquals("Symbol: IBM" + "\n" 
-				+ "Shares: 100" + "\n" 
-				+ "Average Cost: 10.73" + "\n"
-				+ "Last Price: "+ position.getLastPrice() + "\n" 
-				+ "Cost Basis: 1073.0" + "\n"
-				+ "Current Value: " + position.getCurrentValue() + "\n" 
-				+ "Return: " + position.getPositionReturn() + "\n" + "\n", position.toString());
+		assertEquals(String.format("%-10s",position.getSymbol()) 
+				+ "\t"  + String.format("%-10s",position.getShares()) 
+				+ "\t" + String.format("%-10s",position.getAverageCost()) 
+				+ "\t"+ String.format("%-10s",position.getLastPrice()) 
+				+ "\t" + String.format("%-15s", position.getCostBasis()) 
+				+ "\t" + String.format("%-15s", position.getCurrentValue()) 
+				+ "\t" + String.format("%-10s",position.getPositionReturn()), position.toString());
 	}
 	
 }
