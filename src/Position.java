@@ -141,6 +141,29 @@ public class Position {
 		this.averageCost = averageCost;
 	}
 
+	/**
+	 * sets the cost basis of a particular stock from the position object
+	 * @param costBasis
+	 */
+	public void setCostBasis(double costBasis) {
+		this.costBasis = costBasis;
+	}
+
+	/**
+	 * sets the current value of a stock from the position object
+	 * @param currentValue
+	 */
+	public void setCurrentValue(double currentValue) {
+		this.currentValue = currentValue;
+	}
+
+	/**
+	 * sets the return of a stock from the position object
+	 * @param positionReturn
+	 */
+	public void setPositionReturn(double positionReturn) {
+		this.positionReturn = positionReturn;
+	}
 
 /*
 	public static void main(String[] args) {
