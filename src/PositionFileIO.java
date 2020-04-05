@@ -100,35 +100,39 @@ public class PositionFileIO {
 	/**
 	 *method to write data to a file 
 	 *@param fileName: name of file to write new positions to the positions file
-	 *@param position: contains the position information that will be written to the file
+	 *@param portfolio: contains the portfolio information that will be written to the file
 	 */
-	public void writePositionCSV(String fileName, Position position) {
+	public void writePositionCSV (String fileName, Portfolio portfolio) {
 		File out = new File(fileName);
-		String symbolOutput = position.getSymbol();
-		String sharesOutput = Double.toString(position.getShares());
-		String avgCostOutput = Double.toString(position.getAverageCost());
-		String lastPriceOutput = Double.toString(position.getLastPrice());
-		String costBasisOutput = Double.toString(position.getCostBasis());
-		String currentValueOutput = Double.toString(position.getCurrentValue());
-		String returnValueOutput = Double.toString(position.getPositionReturn()); 
+		try (PrintWriter pw = new PrintWriter(out)) {
+			pw.println("Symbol" + "," + "Shares" + "," + "AverageCost" + "," + "LastPrice" + "," + "CostBasis" + "," + "CurrentValue" + "," + "Return");
 		
-		try (PrintWriter pw = new PrintWriter(out) ) {
-			
-			// Prints the position to the file
-			pw.println(symbolOutput + "," + sharesOutput + "," + avgCostOutput + "," + lastPriceOutput + "," + costBasisOutput + "," + currentValueOutput + "," + returnValueOutput);
-						
+			for (Position position : portfolio) {
+				String symbolOutput = position.getSymbol();
+				String sharesOutput = Double.toString(position.getShares());
+				String avgCostOutput = Double.toString(position.getAverageCost());
+				String lastPriceOutput = Double.toString(position.getLastPrice());
+				String costBasisOutput = Double.toString(position.getCostBasis());
+				String currentValueOutput = Double.toString(position.getCurrentValue());
+				String returnValueOutput = Double.toString(position.getPositionReturn()); 
+		
+				// Prints the position to the file
+				pw.println(symbolOutput + "," + sharesOutput + "," + avgCostOutput + "," + lastPriceOutput + "," + costBasisOutput + "," + currentValueOutput + "," + returnValueOutput);
+			}		
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Could not write the File out.");
 		}
 	}
 	
+	
 	/**
 	 * method to create a file name
 	 */
 	public static String createFileName() {
 		String fileName = null;
-		//method to create the filename. 
+		//method to create the filename. We can update the naming structure as needed.
+		fileName = "StockPorfolio.csv";
 		return fileName;
 	}
 	
