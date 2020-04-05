@@ -4,11 +4,17 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 
+ *JUnit testing on various methods in various classes
+ */
 class PositionTest {
 
 	Position position;
 	Position cash;
-	
+	/**
+	 * helper method for running further tests of the code
+	 */
 	public PositionTest() {
 		position = new Position("IBM", 100, 10.73);
 		cash = new Position("USDCASH", 10000, 1.0);

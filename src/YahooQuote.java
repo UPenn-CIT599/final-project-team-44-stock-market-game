@@ -74,6 +74,11 @@ public class YahooQuote {
 		
 	}
 	
+	/**
+	 * tester main to make sure the data is being read in correctly and usable
+	 * throughout the rest of the program
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		YahooQuote quote = new YahooQuote();
 		try {

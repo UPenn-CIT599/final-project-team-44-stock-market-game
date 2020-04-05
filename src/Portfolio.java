@@ -8,7 +8,10 @@ import java.util.*;
  *
  */
 public class Portfolio {
-
+	
+	/**
+	 * local variables to aid in the methods within the class
+	 */
 	ArrayList<Position> portfolio = new ArrayList<Position>();
 	YahooQuote quote = new YahooQuote();
 	
@@ -29,7 +32,8 @@ public class Portfolio {
 	}
 	
 	/*
-	 * Prints your positions line by line for review.
+	 * Prints your positions line by line for review in a formatted
+	 * output for easy reading by individual
 	 */
 	public void printPort() {
 		System.out.println(String.format("%-10s","SYMBOL") 
@@ -46,7 +50,7 @@ public class Portfolio {
 	
 	/**
 	 * Checks the portfolio to make sure it holds sufficient shares of the stock to sell
-	 * to prevent over-selling the position.
+	 * to prevent short selling the position.
 	 * @param symbol
 	 * @param double shares
 	 * @return true if there are sufficient shares to sell, false if there are not
@@ -93,6 +97,12 @@ public class Portfolio {
 		return true;
 	}
 	
+	/**
+	 * checks to makes sure the stock exists
+	 * within the portfolio by checking the symbol
+	 * @param symbol
+	 * @return
+	 */
 	public boolean positionExists(String symbol) {
 		for (Position pos : portfolio) {
 			if (pos.getSymbol().toUpperCase().equals(symbol.toUpperCase())) {
@@ -102,6 +112,12 @@ public class Portfolio {
 		return false;
 	}
 	
+	/**
+	 * adds positions to the existing portfolio when the
+	 * individual wants to buy stock
+	 * @param symbol
+	 * @param shares
+	 */
 	public void buyStock(String symbol, double shares) {
 		try {
 			String stockSymbol = symbol.toUpperCase();
@@ -117,6 +133,13 @@ public class Portfolio {
 		}
 	}
 	
+	
+	/**
+	 * removes the entirety of a position from the portfolio
+	 * if the individual wants to sell all their shares
+	 * in an owned position
+	 * @param symbol
+	 */
 	public void liquidateStocks(String symbol) {
 		String stockSymbol = symbol.toUpperCase();
 		int myPosition = 0;
@@ -136,6 +159,14 @@ public class Portfolio {
 		portfolio.remove(myPosition);
 	}
 	
+	/**
+	 * removes the entirety of a position from the portfolio
+	 * if the individual wants to sell all their shares
+	 * in an owned position
+	 * @param symbol
+	 */
+	//duplicate and may or may not be used in the final product
+	//just toying with ideas and different ways to do things
 	public void liquidateStock(String symbol) {
 		String stockSymbol = symbol.toUpperCase();
 		int i = 0;
@@ -152,6 +183,13 @@ public class Portfolio {
 		portfolio.remove(p);
 	}
 	
+	
+	/**
+	 * updates the current total cash in the portfolio when 
+	 * buys and sells happen
+	 * buys will subtract from the cash while sells will add to the cash
+	 * @param marketValue
+	 */
 	public void updateCash(double marketValue) {
 		for (Position cash : portfolio) {
 			if (cash.getSymbol().toUpperCase().equals("USDCASH")) {
@@ -172,6 +210,7 @@ public class Portfolio {
 	 * sell all their shares in a specific stock
 	 */
 	public void updatePositions() {
+		//may or may not be used based on above methods
 		//need to update this code
 		//need to think about how to add positions when they don't exist
 		//as well as how to delete positions if the individual sells all
@@ -233,6 +272,15 @@ public class Portfolio {
 		return avgCostPerShare;
 	}
 	
+	
+	/**
+	 * main method for user interaction
+	 * @param args
+	 */
+	
+	//ideally this goes in a separate class, still toying with 
+	//ideas here and don't have a final product on what this 
+	//will look like in the separate class
 	public static void main(String[] args) {
 		PositionFileIO posFile = new PositionFileIO();
 		//ArrayList<Position> portfolio = new ArrayList<Position>(); 

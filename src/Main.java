@@ -1,7 +1,12 @@
 import java.util.ArrayList;
 
 public class Main {
-
+	
+	/**
+	 * Prints out the portfolio in a formatted way
+	 * for easy reading by the individual
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		PositionFileIO posFile = new PositionFileIO();
 		ArrayList<Position> portfolio = new ArrayList<Position>(); 

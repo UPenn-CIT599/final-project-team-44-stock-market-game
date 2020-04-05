@@ -55,38 +55,48 @@ public class PositionFileIO {
 	return positions;
 }
 
-public HashMap<String, Double[]> readpositionCSVHM(String fileName) {
-	HashMap <String, Double[]> userPortfolio = new HashMap <String, Double[]>();
-	File positionsFile = new File(fileName);
-	YahooQuote getPrice = new YahooQuote();
-	//overall try catch to read in the elements on the .csv file
-	try {
-		Scanner fileReader = new Scanner(positionsFile);
-		fileReader.nextLine();//skip title row
-		while (fileReader.hasNextLine()) {
-			String line = fileReader.nextLine();
-			String[] lineComponents = line.split(",");
-			
-			String symbol = lineComponents[0];
-			double shares = 0;
-			double avgCost = 1.0;
-			double lastPrice = 1.0;
-			
-			
-			try {
-				shares = Double.parseDouble(lineComponents[1]);
-			} catch (NumberFormatException e) {System.out.println("Wrong format");}
-			try {
-				avgCost = Double.parseDouble(lineComponents[2]);
-			} catch (NumberFormatException e) {System.out.println("Wrong format");}
-			
-			Double[] positionValues = {shares, avgCost};
-			userPortfolio.put(symbol, positionValues);
-		}
-		fileReader.close();
-	} catch (FileNotFoundException e) {e.printStackTrace();}
-	return userPortfolio;
-}
+	/**
+	 * Reads in position data from a file for a given user's portfolio
+	 * @param fileName
+	 * @return
+	 * return HashMap of positions that are read in from the user's portfolio
+	 * using the symbol as the key
+	 */
+	//this is a duplicate of the above, just using a different object
+	//seeing which one will be best in the overall program and will 
+	//delete the non-used one upon final turn-in
+	public HashMap<String, Double[]> readpositionCSVHM(String fileName) {
+		HashMap <String, Double[]> userPortfolio = new HashMap <String, Double[]>();
+		File positionsFile = new File(fileName);
+		YahooQuote getPrice = new YahooQuote();
+		//overall try catch to read in the elements on the .csv file
+		try {
+			Scanner fileReader = new Scanner(positionsFile);
+			fileReader.nextLine();//skip title row
+			while (fileReader.hasNextLine()) {
+				String line = fileReader.nextLine();
+				String[] lineComponents = line.split(",");
+				
+				String symbol = lineComponents[0];
+				double shares = 0;
+				double avgCost = 1.0;
+				double lastPrice = 1.0;
+				
+				
+				try {
+					shares = Double.parseDouble(lineComponents[1]);
+				} catch (NumberFormatException e) {System.out.println("Wrong format");}
+				try {
+					avgCost = Double.parseDouble(lineComponents[2]);
+				} catch (NumberFormatException e) {System.out.println("Wrong format");}
+				
+				Double[] positionValues = {shares, avgCost};
+				userPortfolio.put(symbol, positionValues);
+			}
+			fileReader.close();
+		} catch (FileNotFoundException e) {e.printStackTrace();}
+		return userPortfolio;
+	}
 	/**
 	 *method to write data to a file 
 	 *@param fileName: name of file to write new positions to the positions file
@@ -122,6 +132,10 @@ public HashMap<String, Double[]> readpositionCSVHM(String fileName) {
 		return fileName;
 	}
 	
+	/**
+	 * tester main method to make sure reading file correctly
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		PositionFileIO test = new PositionFileIO();
 		ArrayList<Position> portfolio = test.readpositionCSV("DummyStockPortfolio.csv");
