@@ -4,6 +4,8 @@ import java.util.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Reads in data from the positions csv file
@@ -106,18 +108,28 @@ public class PositionFileIO {
 		File out = new File(fileName);
 		try (PrintWriter pw = new PrintWriter(out)) {
 			pw.println("Symbol" + "," + "Shares" + "," + "AverageCost" + "," + "LastPrice" + "," + "CostBasis" + "," + "CurrentValue" + "," + "Return");
-		
+		//the following code tries to convert to dollar format where needed
 			for (Position position : portfolio) {
 				String symbolOutput = position.getSymbol();
+				NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
+		        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+				String sharesOutput = numberFormat.format(position.getShares());
+		        String avgCostOutput = dollarFormat.format(position.getAverageCost());
+		        String lastPriceOutput = dollarFormat.format(position.getLastPrice());
+		        String costBasisOutput = dollarFormat.format(position.getCostBasis());
+		        String currentValueOutput = dollarFormat.format(position.getCurrentValue());
+		        String returnValueOutput = Double.toString(position.getPositionReturn());
+				//kept the following code...
+		        /*String symbolOutput = position.getSymbol();
 				String sharesOutput = Double.toString(position.getShares());
 				String avgCostOutput = Double.toString(position.getAverageCost());
 				String lastPriceOutput = Double.toString(position.getLastPrice());
 				String costBasisOutput = Double.toString(position.getCostBasis());
 				String currentValueOutput = Double.toString(position.getCurrentValue());
-				String returnValueOutput = Double.toString(position.getPositionReturn()); 
-		
-				// Prints the position to the file
-				pw.println(symbolOutput + "," + sharesOutput + "," + avgCostOutput + "," + lastPriceOutput + "," + costBasisOutput + "," + currentValueOutput + "," + returnValueOutput);
+				String returnValueOutput = Double.toString(position.getPositionReturn());*/ 
+		        //"\"" + currency + "\" ,"
+				// Prints the position to the file. Need to format it in a way that we can print commas to a cell in a .csv file.
+				pw.println(symbolOutput + "," + "\"" + sharesOutput + "\"," + "\"" + avgCostOutput + "\"," + "\"" + lastPriceOutput + "\"," + "\"" + costBasisOutput + "\"," + "\"" + currentValueOutput + "\"," + returnValueOutput);
 			}		
 		} catch (IOException e) {
 			e.printStackTrace();
