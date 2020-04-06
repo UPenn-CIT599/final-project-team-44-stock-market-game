@@ -16,4 +16,8 @@ Our stock market “paper trading” program will include the following key feat
 
 - Trade: The trade class will be used to interact with the user and get the trade instructions. The trade instructions will then permeate throughout the program, updating postiions and the portfolio accordingly.
 
-- YahooQuote: This class uses yahoo finance as a data source and pulls the current price of a stock in to the program. The current price wlil be used to update positions and the portfolio accordingly.
+- YahooQuote: This class uses yahoo finance as a data source and pulls the current price of a stock in to the program. The current price will be used to update positions and the portfolio accordingly.
+
+# Please NOTE
+The JSON jar file needs to be added to the project as its own build path.
+JUNIT5 needs to be added to the project as a build path for the JUnit tests to work.
