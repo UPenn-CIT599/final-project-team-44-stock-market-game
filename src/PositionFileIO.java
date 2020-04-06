@@ -109,7 +109,7 @@ public class PositionFileIO {
 		try (PrintWriter pw = new PrintWriter(out)) {
 			pw.println("Symbol" + "," + "Shares" + "," + "AverageCost" + "," + "LastPrice" + "," + "CostBasis" + "," + "CurrentValue" + "," + "Return");
 		//the following code tries to convert to dollar format where needed
-			for (Position position : portfolio) {
+			for (Position position : portfolio.portfolio) {
 				String symbolOutput = position.getSymbol();
 				NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
 		        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
