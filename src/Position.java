@@ -27,7 +27,7 @@ public class Position {
 			averageCost = 1.0;
 		}
 		else {
-			averageCost = currAverageCost;
+			averageCost = Math.round(currAverageCost * 100) / 100.00;
 		}
 		
 		//Last price is grabbed from the StockAPICall class to the API based on the position's symbol.

@@ -1,7 +1,5 @@
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.Test;
 
 class PortfolioTest {
@@ -31,32 +29,20 @@ class PortfolioTest {
 	}
 	
 	@Test
-	void positionExistsTrue() {
-		assertEquals(true, port.positionExists("USDCASH"));
-	}
-
-	@Test
-	void positionExistsFalse() {
-		assertEquals(false, port.positionExists("MADEUPSTOCKSYMBOL"));
-	}
-	
-	
-	@Test
 	void buyStock() {
 		port.buyStock("ZVZZT", 10);
-		assertEquals(true, port.positionExists("ZVZZT"));
+		assertEquals(true, port.portfolio.containsKey("ZVZZT"));
 	}
 	
 	@Test
 	void liquidateStock() {
 		port.liquidateStock("GE");
-		assertEquals(false, port.positionExists("GE"));
+		assertEquals(false, port.portfolio.containsKey("GE"));
 	}
 	
 	@Test
 	void getPositionsTest() {
-		ArrayList<Position> pTest = port.getPositions();
-		assertEquals(4, pTest.size());
+		assertEquals(4, port.portfolio.size());
 	}
 	
 }

@@ -1,6 +1,5 @@
 import java.io.File;
 import java.util.*;
-//import javax.swing.text.Position;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,49 +12,8 @@ import java.util.Locale;
  * Writes data to the file
  * 
  */
-public class PositionFileIO {
-	/**
-	 * Reads in position data from a file for a given user's portfolio
-	 * @param positionsFile: name of file to read positions from
-	 * return array list of positions that are read in from the user's portfolio
-	 */
-	public ArrayList<Position> readpositionCSV(String fileName) {
-	ArrayList <Position> positions = new ArrayList<Position>();
-	File positionsFile = new File(fileName);
-	YahooQuote getPrice = new YahooQuote();
-	//overall try catch to read in the elements on the .csv file
-	try {
-		Scanner fileReader = new Scanner(positionsFile);
-		fileReader.nextLine(); // skip title row
-		while (fileReader.hasNextLine()) {
-			String line = fileReader.nextLine();
-			String[] lineComponents = line.split(",");
-			
-			//System.out.println(Arrays.toString(lineComponents));
-			
-			String symbol = lineComponents[0];
-			double shares = 0;
-			double avgCost = 1.0;
-			double lastPrice = 1.0;
-			
-			try {
-				shares = Double.parseDouble(lineComponents[1]);
-			} catch (NumberFormatException e) {System.out.println("Wrong format");}
-			try {
-				avgCost = Double.parseDouble(lineComponents[2]);
-			} catch (NumberFormatException e) {System.out.println("Wrong format");}
 
-			Position position = new Position(symbol, shares, avgCost);
-							
-			positions.add(position);
-		}
-		fileReader.close();
-	} catch (FileNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace(); 
-	}
-	return positions;
-}
+public class PositionFileIO {
 
 	/**
 	 * Reads in position data from a file for a given user's portfolio
@@ -67,10 +25,9 @@ public class PositionFileIO {
 	//this is a duplicate of the above, just using a different object
 	//seeing which one will be best in the overall program and will 
 	//delete the non-used one upon final turn-in
-	public HashMap<String, Double[]> readpositionCSVHM(String fileName) {
-		HashMap <String, Double[]> userPortfolio = new HashMap <String, Double[]>();
+	public HashMap<String, Position> readpositionCSV(String fileName) {
+		HashMap <String, Position> userPortfolio = new HashMap <String, Position>();
 		File positionsFile = new File(fileName);
-		YahooQuote getPrice = new YahooQuote();
 		//overall try catch to read in the elements on the .csv file
 		try {
 			Scanner fileReader = new Scanner(positionsFile);
@@ -81,9 +38,7 @@ public class PositionFileIO {
 				
 				String symbol = lineComponents[0];
 				double shares = 0;
-				double avgCost = 1.0;
-				double lastPrice = 1.0;
-				
+				double avgCost = 1.0;			
 				
 				try {
 					shares = Double.parseDouble(lineComponents[1]);
@@ -92,8 +47,8 @@ public class PositionFileIO {
 					avgCost = Double.parseDouble(lineComponents[2]);
 				} catch (NumberFormatException e) {System.out.println("Wrong format");}
 				
-				Double[] positionValues = {shares, avgCost};
-				userPortfolio.put(symbol, positionValues);
+				Position p = new Position(symbol, shares, avgCost);
+				userPortfolio.put(symbol, p);
 			}
 			fileReader.close();
 		} catch (FileNotFoundException e) {e.printStackTrace();}
@@ -109,16 +64,16 @@ public class PositionFileIO {
 		try (PrintWriter pw = new PrintWriter(out)) {
 			pw.println("Symbol" + "," + "Shares" + "," + "AverageCost" + "," + "LastPrice" + "," + "CostBasis" + "," + "CurrentValue" + "," + "Return");
 		//the following code tries to convert to dollar format where needed
-			for (Position position : portfolio.portfolio) {
-				String symbolOutput = position.getSymbol();
+			for (String position : portfolio.portfolio.keySet()) {
+				String symbolOutput = portfolio.portfolio.get(position).getSymbol();
 				NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
 		        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-				String sharesOutput = numberFormat.format(position.getShares());
-		        String avgCostOutput = dollarFormat.format(position.getAverageCost());
-		        String lastPriceOutput = dollarFormat.format(position.getLastPrice());
-		        String costBasisOutput = dollarFormat.format(position.getCostBasis());
-		        String currentValueOutput = dollarFormat.format(position.getCurrentValue());
-		        String returnValueOutput = Double.toString(position.getPositionReturn());
+				String sharesOutput = numberFormat.format(portfolio.portfolio.get(position).getShares());
+		        String avgCostOutput = dollarFormat.format(portfolio.portfolio.get(position).getAverageCost());
+		        String lastPriceOutput = dollarFormat.format(portfolio.portfolio.get(position).getLastPrice());
+		        String costBasisOutput = dollarFormat.format(portfolio.portfolio.get(position).getCostBasis());
+		        String currentValueOutput = dollarFormat.format(portfolio.portfolio.get(position).getCurrentValue());
+		        String returnValueOutput = Double.toString(portfolio.portfolio.get(position).getPositionReturn());
 				//kept the following code...
 		        /*String symbolOutput = position.getSymbol();
 				String sharesOutput = Double.toString(position.getShares());
@@ -137,7 +92,6 @@ public class PositionFileIO {
 		}
 	}
 	
-	
 	/**
 	 * method to create a file name
 	 */
@@ -154,7 +108,7 @@ public class PositionFileIO {
 	 */
 	public static void main(String[] args) {
 		PositionFileIO test = new PositionFileIO();
-		ArrayList<Position> portfolio = test.readpositionCSV("DummyStockPortfolio.csv");
+		HashMap<String, Position> portfolio = test.readpositionCSV("DummyStockPortfolio.csv");
 		System.out.println(portfolio);
 	}
 	
