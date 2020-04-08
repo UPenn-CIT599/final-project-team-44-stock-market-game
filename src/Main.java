@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 
 public class Main {
 	
@@ -9,8 +8,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		PositionFileIO posFile = new PositionFileIO();
-		ArrayList<Position> portfolio = new ArrayList<Position>(); 
-		portfolio = posFile.readpositionCSV("DummyStockPortfolio.csv");
+		Portfolio port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
 		
 		System.out.println(String.format("%-10s","SYMBOL") 
 				+ "\t" + String.format("%-10s", "SHARES") 
@@ -19,8 +17,8 @@ public class Main {
 				+ "\t" + String.format("%-15s","COST BASIS") 
 				+ "\t" + String.format("%-15s", "CURR VALUE") 
 				+ "\t" + String.format("%-10s", "RETURN (%)"));
-		for (Position pos : portfolio) {
-			System.out.println(pos);
+		for (String symbol : port.portfolio.keySet()) {
+			System.out.println(port.portfolio.get(symbol));
 		}
 		
 		//System.out.println(portfolio.get(0).getSymbol());
