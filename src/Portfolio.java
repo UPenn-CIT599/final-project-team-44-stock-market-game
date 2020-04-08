@@ -12,14 +12,14 @@ public class Portfolio {
 	/**
 	 * local variables to aid in the methods within the class
 	 */
-	ArrayList<Position> portfolio = new ArrayList<Position>();
+	HashMap<String, Position> portfolio = new HashMap<String, Position>();
 	YahooQuote quote = new YahooQuote();
 	
 	/**
 	 * Constructs the Portfolio object
 	 * @param positions
 	 */
-	public Portfolio(ArrayList<Position> positions) {
+	public Portfolio(HashMap<String, Position> positions) {
 		this.portfolio = positions;
 	}
 	
@@ -27,7 +27,7 @@ public class Portfolio {
 	 * returns all Position objects read from csv
 	 * @return
 	 */
-	public ArrayList<Position> getPositions() {
+	public HashMap<String, Position> getPositions() {
 		return portfolio;
 	}
 	
@@ -43,8 +43,8 @@ public class Portfolio {
 		+ "\t" + String.format("%-15s","COST BASIS") 
 		+ "\t" + String.format("%-15s", "CURR VALUE") 
 		+ "\t" + String.format("%-10s", "RETURN (%)"));
-		for (Position pos : portfolio) {
-			System.out.println(pos);
+		for (String symbol : portfolio.keySet()) {
+			System.out.println(portfolio.get(symbol));
 		}
 	}
 	
@@ -57,12 +57,7 @@ public class Portfolio {
 	 * sufficient shares to sell.
 	 */
 	public boolean hasSufficientShares(String symbol, double shares) {
-		double currentShares = 0.0;
-		for (Position position : portfolio) {
-			if(position.getSymbol().toUpperCase().equals(symbol.toUpperCase())) {
-				currentShares = position.getShares();
-			}
-		}
+		double currentShares = portfolio.get(symbol).getShares();
 		if (currentShares >= shares) {
 			return true;
 		} else return false;
@@ -79,37 +74,16 @@ public class Portfolio {
 		try {
 			double price = quote.getLastPrice(symbol);
 			double cashToSpend = price * shares;
-			for (Position position : portfolio) {
-				if(position.getSymbol().toUpperCase().equals("USDCASH")) {
-					Position cash = position;
-					if(cash.getCurrentValue() < cashToSpend) {
-						return false;
-					}
-				}
-				
+			double currCash = portfolio.get("USDCASH").getCurrentValue();
+			if (currCash < cashToSpend) {
+				return false;
 			}
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * checks to makes sure the stock exists
-	 * within the portfolio by checking the symbol
-	 * @param symbol
-	 * @return
-	 */
-	public boolean positionExists(String symbol) {
-		for (Position pos : portfolio) {
-			if (pos.getSymbol().toUpperCase().equals(symbol.toUpperCase())) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	/**
@@ -124,7 +98,7 @@ public class Portfolio {
 			double price = quote.getLastPrice(stockSymbol);
 			double marketValue = price * shares;
 			Position p = new Position(stockSymbol, shares, price);
-			portfolio.add(p);
+			portfolio.put(symbol, p);
 			this.updateCash(-marketValue);
 			System.out.println("You bought " + shares + " shares of " + stockSymbol + " at $" + price);
 		} catch (IOException e) {
@@ -140,49 +114,44 @@ public class Portfolio {
 	 * in an owned position
 	 * @param symbol
 	 */
-	public void liquidateStocks(String symbol) {
-		String stockSymbol = symbol.toUpperCase();
-		int myPosition = 0;
-		for (int i = 0; i < portfolio.size(); i++) {
-			if (portfolio.get(i).getSymbol().equals(stockSymbol)) {
-				//storing position in portfolio to remove after iterating over ArrayList
-				//to avoid causing concurrent modification exception.
-				myPosition = i;
-				Position p = portfolio.get(i);
-				double shares = p.getShares();
-				double price = p.getLastPrice();
-				double marketValue = p.getCurrentValue();
-				this.updateCash(marketValue);
-				System.out.println("You sold " + shares + " shares of " + stockSymbol + " at $" + price);
-			}
-		}
-		portfolio.remove(myPosition);
-	}
-	
-	/**
-	 * removes the entirety of a position from the portfolio
-	 * if the individual wants to sell all their shares
-	 * in an owned position
-	 * @param symbol
-	 */
-	//duplicate and may or may not be used in the final product
-	//just toying with ideas and different ways to do things
 	public void liquidateStock(String symbol) {
 		String stockSymbol = symbol.toUpperCase();
-		int i = 0;
-		//searching through portfolio to find the index for symbol.
-		while (!portfolio.get(i).getSymbol().equals(stockSymbol)) {
-			i++;
-		}
-		Position p = portfolio.get(i);
-		double shares = p.getShares();
-		double price = p.getLastPrice();
-		double marketValue = p.getCurrentValue();
+		double price = portfolio.get(stockSymbol).getLastPrice();
+		double marketValue = portfolio.get(stockSymbol).getCurrentValue();
 		this.updateCash(marketValue);
-		System.out.println("You sold " + shares + " shares of " + stockSymbol + " at $" + price);
-		portfolio.remove(p);
+		System.out.println("You liquidated your position of " + stockSymbol + " at $" + price);
+		portfolio.remove(stockSymbol);
 	}
 	
+	public void addToPosition(String symbol, double shares) {
+		String stockSymbol = symbol.toUpperCase();
+		Position origP = portfolio.get(stockSymbol);
+		double price = origP.getLastPrice();
+		double origShares = origP.getShares();
+		double origCostBasis = origP.getCostBasis();
+		double marketValue = price * shares;
+		double newShares = origShares + shares;
+		double newAvgCost = (origCostBasis + marketValue) / newShares;
+		
+		Position updatedPosition = new Position(stockSymbol, newShares, newAvgCost);
+		portfolio.put(stockSymbol, updatedPosition);
+		this.updateCash(-marketValue);
+	}
+	
+	public void trimPosition(String symbol, double shares) {
+		String stockSymbol = symbol.toUpperCase();
+		Position origP = portfolio.get(stockSymbol);
+		double price = origP.getLastPrice();
+		double origShares = origP.getShares();
+		double origCostBasis = origP.getCostBasis();
+		double marketValue = price * shares;
+		double newShares = origShares - shares;
+		double newAvgCost = (origCostBasis - marketValue) / newShares;
+		
+		Position updatedPosition = new Position(stockSymbol, newShares, newAvgCost);
+		portfolio.put(stockSymbol, updatedPosition);
+		this.updateCash(marketValue);
+	}
 	
 	/**
 	 * updates the current total cash in the portfolio when 
@@ -191,17 +160,29 @@ public class Portfolio {
 	 * @param marketValue
 	 */
 	public void updateCash(double marketValue) {
-		for (Position cash : portfolio) {
-			if (cash.getSymbol().toUpperCase().equals("USDCASH")) {
-				double currCash = cash.getShares();
-				double newCashValue = currCash + marketValue;
-				cash.setShares(newCashValue);
-				cash.setCostBasis(newCashValue);
-				cash.setCurrentValue(newCashValue);
-			}
-		}
+		Position cash = portfolio.get("USDCASH");
+		double currCash = cash.getShares();
+		double newCashValue = currCash + marketValue;
+		cash.setShares(newCashValue);
+		cash.setCostBasis(newCashValue);
+		cash.setCurrentValue(newCashValue);
 	}
 	
+	/*
+	 * Updates all portfolio positions except for cash, which is updated in its own methos.
+	 * This will pull the latest price for each position and update all other position variables.	
+	 */
+	public void updatePortfolio() {
+		for (String symbol : portfolio.keySet()) {
+			if (!symbol.equals("USDCASH")) {
+				double shares = portfolio.get(symbol).getShares();
+				double avgCost = portfolio.get(symbol).getAverageCost();
+				Position p = new Position(symbol, shares, avgCost);
+				portfolio.put(symbol, p);
+			}
+		}
+		this.printPort();
+	}
 	/**
 	 * Updates the porfolio to include the most recent trade
 	 * when an individual buys or sells
@@ -217,62 +198,7 @@ public class Portfolio {
 		//Cash position needs to update every time as well
 	}
 	
-	
-	/**
-	 * Returns the current market value of each stock in the current
-	 * portfolio as well as cash using the current quoted price
-	 * and the symbol as the key 
-	 * @return
-	 */
-	public double getMarketValue(String symbol) {
-		double currentValue = 0;
-		for (Position position : portfolio) {
-			if(position.getSymbol().equals(symbol)) {
-				currentValue = position.getShares() * position.getLastPrice();
-			}
-		}
-		return currentValue;
-	}
-	
-	
-	/**
-	 * returns the percentage return the stock has had
-	 * since owning it
-	 * percent return = (current market value minus cost basis)/cost basis
-	 * @param symbol
-	 * @return
-	 */
-	public double getReturn(String symbol) {
-		double currentReturn = 0;
-		for (Position position : portfolio) {
-			if (position.getSymbol().equals(symbol)) {
-				double currentPrice = position.getLastPrice();
-				double currentMarketValue = position.getShares() * currentPrice;
-				currentReturn = (currentMarketValue - position.getCostBasis()) / position.getCostBasis();
-			}
-		}
-		return currentReturn;
-	}
-	
-	
-	/**
-	 * returns the average cost per share given a symbol
-	 * @param symbol
-	 * @return
-	 */
-	public double getAvgCost(String symbol) {
-		double avgCostPerShare = 0;
-		for (Position position : portfolio) {
-			if (position.getSymbol().equals(symbol)) {
-				double shares = position.getShares();
-				double cost = position.getCostBasis();
-				avgCostPerShare = cost / shares;
-			}
-		}
-		return avgCostPerShare;
-	}
-	
-	
+
 	/**
 	 * main method for user interaction
 	 * @param args
@@ -286,26 +212,43 @@ public class Portfolio {
 		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
 		Portfolio port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
 		
+		
 		String continueTrading = "Y";
 		Scanner in = new Scanner(System.in);
-		port.printPort();
-		while (continueTrading.toUpperCase() != "N") {
-			System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
-			continueTrading = in.next();
+		port.updatePortfolio();
+		//port.printPort();
+		System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
+		continueTrading = in.next();
+		while (!continueTrading.toUpperCase().equals("N")) {
 			System.out.println("buy or sell?");
 			String action = in.next();
 			if (action.equals("buy")) {
 				port.buyStock("ABT", 100);
 				System.out.println();
-				port.printPort();
+				port.updatePortfolio();
+				//port.printPort();
+			}
+			else if (action.equals("add")) {
+				port.addToPosition("AAPL", 20);
+				port.updatePortfolio();				
+			}
+			else if (action.equals("trim")) {
+				port.trimPosition("AAPL", 20);
+				port.updatePortfolio();				
 			}
 			else {
 				System.out.println();
 				port.liquidateStock("GE");
 				System.out.println();
-				port.printPort();
+				port.updatePortfolio();
+				//port.printPort();
 			}
+			System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
+			continueTrading = in.next();
 		}
+		in.close();
+		
+		//port.printPort();
 		
 		/*
 		System.out.println();
