@@ -17,6 +17,7 @@ public class Main {
 				+ "\t" + String.format("%-15s","COST BASIS") 
 				+ "\t" + String.format("%-15s", "CURR VALUE") 
 				+ "\t" + String.format("%-10s", "RETURN (%)"));
+		posFile.writePositionCSV("DummyStockPortfoliov2.csv", port);
 		for (String symbol : port.portfolio.keySet()) {
 			System.out.println(port.portfolio.get(symbol));
 		}

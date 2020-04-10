@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 
 /**
  * Reads in data from the positions csv file
@@ -59,29 +62,28 @@ public class PositionFileIO {
 	 *@param fileName: name of file to write new positions to the positions file
 	 *@param portfolio: contains the portfolio information that will be written to the file
 	 */
-	public void writePositionCSV (String fileName, Portfolio portfolio) {
+	public void writePositionCSV (String fileName, Portfolio port) {
 		File out = new File(fileName);
 		try (PrintWriter pw = new PrintWriter(out)) {
 			pw.println("Symbol" + "," + "Shares" + "," + "AverageCost" + "," + "LastPrice" + "," + "CostBasis" + "," + "CurrentValue" + "," + "Return");
 		//the following code tries to convert to dollar format where needed
-			for (String position : portfolio.portfolio.keySet()) {
-				String symbolOutput = portfolio.portfolio.get(position).getSymbol();
-				NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
+			for (String symbol : port.portfolio.keySet()) {
+				//if we ever wanted this--will probably delete when finalized
+				/*NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
 		        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-				String sharesOutput = numberFormat.format(portfolio.portfolio.get(position).getShares());
-		        String avgCostOutput = dollarFormat.format(portfolio.portfolio.get(position).getAverageCost());
-		        String lastPriceOutput = dollarFormat.format(portfolio.portfolio.get(position).getLastPrice());
-		        String costBasisOutput = dollarFormat.format(portfolio.portfolio.get(position).getCostBasis());
-		        String currentValueOutput = dollarFormat.format(portfolio.portfolio.get(position).getCurrentValue());
-		        String returnValueOutput = Double.toString(portfolio.portfolio.get(position).getPositionReturn());
-				//kept the following code...
-		        /*String symbolOutput = position.getSymbol();
-				String sharesOutput = Double.toString(position.getShares());
-				String avgCostOutput = Double.toString(position.getAverageCost());
-				String lastPriceOutput = Double.toString(position.getLastPrice());
-				String costBasisOutput = Double.toString(position.getCostBasis());
-				String currentValueOutput = Double.toString(position.getCurrentValue());
-				String returnValueOutput = Double.toString(position.getPositionReturn());*/ 
+				String sharesOutput = numberFormat.format(port.portfolio.get(symbol).getShares());
+		        String avgCostOutput = dollarFormat.format(port.portfolio.get(symbol).getAverageCost());
+		        String lastPriceOutput = dollarFormat.format(port.portfolio.get(symbol).getLastPrice());
+		        String costBasisOutput = dollarFormat.format(port.portfolio.get(symbol).getCostBasis());
+		        String currentValueOutput = dollarFormat.format(port.portfolio.get(symbol).getCurrentValue());
+		        String returnValueOutput = Double.toString(port.portfolio.get(symbol).getPositionReturn());*/
+				String symbolOutput = port.portfolio.get(symbol).getSymbol();
+				String sharesOutput = Double.toString(port.portfolio.get(symbol).getShares());
+				String avgCostOutput = Double.toString(port.portfolio.get(symbol).getAverageCost());
+				String lastPriceOutput = Double.toString(port.portfolio.get(symbol).getLastPrice());
+				String costBasisOutput = Double.toString(port.portfolio.get(symbol).getCostBasis());
+				String currentValueOutput = Double.toString(port.portfolio.get(symbol).getCurrentValue());
+				String returnValueOutput = Double.toString(port.portfolio.get(symbol).getPositionReturn());
 		        //"\"" + currency + "\" ,"
 				// Prints the position to the file. Need to format it in a way that we can print commas to a cell in a .csv file.
 				pw.println(symbolOutput + "," + "\"" + sharesOutput + "\"," + "\"" + avgCostOutput + "\"," + "\"" + lastPriceOutput + "\"," + "\"" + costBasisOutput + "\"," + "\"" + currentValueOutput + "\"," + returnValueOutput);
@@ -110,9 +112,13 @@ public class PositionFileIO {
 		PositionFileIO test = new PositionFileIO();
 		HashMap<String, Position> portfolio = test.readpositionCSV("DummyStockPortfolio.csv");
 		System.out.println(portfolio);
+				
 	}
 	
-}
+		//System.out.println(portfolio);
+	}
+	
+
 	
 	
 	
