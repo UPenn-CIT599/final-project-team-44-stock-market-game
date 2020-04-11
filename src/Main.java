@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 
 public class Main {
 	
@@ -8,6 +9,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		PositionFileIO posFile = new PositionFileIO();
+		try {
 		Portfolio port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
 		
 		System.out.println(String.format("%-10s","SYMBOL") 
@@ -20,6 +22,10 @@ public class Main {
 		posFile.writePositionCSV("DummyStockPortfoliov2.csv", port);
 		for (String symbol : port.portfolio.keySet()) {
 			System.out.println(port.portfolio.get(symbol));
+		}
+		} catch (FileNotFoundException e) {
+			System.out.println("FileNotFoundException - that is not a valid file name.");
+			System.out.println("Please try entering a new name.");
 		}
 		
 		//System.out.println(portfolio.get(0).getSymbol());

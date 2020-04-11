@@ -28,11 +28,11 @@ public class PositionFileIO {
 	//this is a duplicate of the above, just using a different object
 	//seeing which one will be best in the overall program and will 
 	//delete the non-used one upon final turn-in
-	public HashMap<String, Position> readpositionCSV(String fileName) {
+	public HashMap<String, Position> readpositionCSV(String fileName) throws FileNotFoundException {
 		HashMap <String, Position> userPortfolio = new HashMap <String, Position>();
 		File positionsFile = new File(fileName);
 		//overall try catch to read in the elements on the .csv file
-		try {
+		//try {
 			Scanner fileReader = new Scanner(positionsFile);
 			fileReader.nextLine();//skip title row
 			while (fileReader.hasNextLine()) {
@@ -54,7 +54,7 @@ public class PositionFileIO {
 				userPortfolio.put(symbol, p);
 			}
 			fileReader.close();
-		} catch (FileNotFoundException e) {e.printStackTrace();}
+		//} catch (FileNotFoundException e) {e.printStackTrace();}
 		return userPortfolio;
 	}
 	/**
@@ -62,9 +62,9 @@ public class PositionFileIO {
 	 *@param fileName: name of file to write new positions to the positions file
 	 *@param portfolio: contains the portfolio information that will be written to the file
 	 */
-	public void writePositionCSV (String fileName, Portfolio port) {
+	public void writePositionCSV (String fileName, Portfolio port) throws FileNotFoundException {
 		File out = new File(fileName);
-		try (PrintWriter pw = new PrintWriter(out)) {
+		PrintWriter pw = new PrintWriter(out);
 			pw.println("Symbol" + "," + "Shares" + "," + "AverageCost" + "," + "LastPrice" + "," + "CostBasis" + "," + "CurrentValue" + "," + "Return");
 		//the following code tries to convert to dollar format where needed
 			for (String symbol : port.portfolio.keySet()) {
@@ -88,11 +88,9 @@ public class PositionFileIO {
 				// Prints the position to the file. Need to format it in a way that we can print commas to a cell in a .csv file.
 				pw.println(symbolOutput + "," + "\"" + sharesOutput + "\"," + "\"" + avgCostOutput + "\"," + "\"" + lastPriceOutput + "\"," + "\"" + costBasisOutput + "\"," + "\"" + currentValueOutput + "\"," + returnValueOutput);
 			}		
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Could not write the File out.");
+		
 		}
-	}
+	
 	
 	/**
 	 * method to create a file name
