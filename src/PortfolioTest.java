@@ -12,7 +12,7 @@ class PortfolioTest {
 		PositionFileIO posFile = new PositionFileIO();
 		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
 		try {
-			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
+			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio - Copy.csv"));
 		} catch (FileNotFoundException e) {
 			System.out.println("File does not exist.");
 			e.printStackTrace();
