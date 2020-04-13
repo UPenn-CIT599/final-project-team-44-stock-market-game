@@ -48,8 +48,20 @@ class PortfolioTest {
 	
 	@Test
 	void liquidateStock() {
-		port.liquidateStock("GE");
+		port.sellStock("GE", 10);
 		assertEquals(false, port.portfolio.containsKey("GE"));
+	}
+	
+	@Test void addStock() {
+		double currShares = port.portfolio.get("AAPL").getShares();
+		port.buyStock("AAPL", 1);
+		assertEquals(currShares + 1, port.portfolio.get("AAPL").getShares());
+	}
+	
+	@Test void trimStock() {
+		double currShares = port.portfolio.get("AAPL").getShares();
+		port.sellStock("AAPL", 1);
+		assertEquals(currShares - 1, port.portfolio.get("AAPL").getShares());
 	}
 	
 	@Test
