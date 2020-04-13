@@ -31,27 +31,62 @@ public class PositionFileIO {
 	public HashMap<String, Position> readpositionCSV(String fileName) throws FileNotFoundException {
 		HashMap <String, Position> userPortfolio = new HashMap <String, Position>();
 		File positionsFile = new File(fileName);
+		int numColumns = 7;
+		boolean goodRow = true;
+		int rowNum = 0;
+		YahooQuote yahooIsAlive = new YahooQuote();
 		//overall try catch to read in the elements on the .csv file
 		//try {
 			Scanner fileReader = new Scanner(positionsFile);
 			fileReader.nextLine();//skip title row
 			while (fileReader.hasNextLine()) {
+				rowNum++;
 				String line = fileReader.nextLine();
 				String[] lineComponents = line.split(",");
-				
-				String symbol = lineComponents[0];
-				double shares = 0;
-				double avgCost = 1.0;			
-				
+				//check for empty cells
+				for (int i=0; i < numColumns; i++) {
+					String s = lineComponents[i];
+					if (s.compareTo("")==0){
+						goodRow = false;
+						System.out.println("Blank entry in row " + rowNum + ". This row was ignored.");
+					}					
+				}
 				try {
-					shares = Double.parseDouble(lineComponents[1]);
-				} catch (NumberFormatException e) {System.out.println("Wrong format");}
-				try {
-					avgCost = Double.parseDouble(lineComponents[2]);
-				} catch (NumberFormatException e) {System.out.println("Wrong format");}
+					if (lineComponents[0].compareTo("USDCASH")!=0) {
+						if (!yahooIsAlive.isValidSymbol(lineComponents[0])) {
+							goodRow = false;
+							System.out.println("Wrong Stock Symbol in row " + rowNum + ". This row was ignored.");
+						}}
+						} catch (IOException e) {
+							goodRow = false;
+							System.out.println("Wrong Stock Symbol in row " + rowNum + ". This row was ignored.");
+						}
+					
+				if (goodRow) {
+					
+					String symbol = lineComponents[0];
+					double shares = 0;
+					double avgCost = 1.0;			
 				
-				Position p = new Position(symbol, shares, avgCost);
-				userPortfolio.put(symbol, p);
+					try {
+						shares = Double.parseDouble(lineComponents[1]);
+					} catch (NumberFormatException e) {
+						goodRow = false;
+						System.out.println("Shares is entered in the wrong format in row " + rowNum + ". This row was ignored.");
+					}
+					try {
+						avgCost = Double.parseDouble(lineComponents[2]);
+					} catch (NumberFormatException e) {
+						goodRow = false;
+						System.out.println("Average Cost is entered in the wrong format in row " + rowNum + ". This row was ignored.");
+					}
+					
+					if (goodRow) {
+						Position p = new Position(symbol, shares, avgCost);
+						userPortfolio.put(symbol, p);
+					}
+				}
+				goodRow=true;
 			}
 			fileReader.close();
 		//} catch (FileNotFoundException e) {e.printStackTrace();}
@@ -66,6 +101,7 @@ public class PositionFileIO {
 		File out = new File(fileName);
 		PrintWriter pw = new PrintWriter(out);
 			pw.println("Symbol" + "," + "Shares" + "," + "AverageCost" + "," + "LastPrice" + "," + "CostBasis" + "," + "CurrentValue" + "," + "Return");
+			//pw.flush();
 		//the following code tries to convert to dollar format where needed
 			for (String symbol : port.portfolio.keySet()) {
 				//if we ever wanted this--will probably delete when finalized
@@ -87,7 +123,9 @@ public class PositionFileIO {
 		        //"\"" + currency + "\" ,"
 				// Prints the position to the file. Need to format it in a way that we can print commas to a cell in a .csv file.
 				pw.println(symbolOutput + "," + "\"" + sharesOutput + "\"," + "\"" + avgCostOutput + "\"," + "\"" + lastPriceOutput + "\"," + "\"" + costBasisOutput + "\"," + "\"" + currentValueOutput + "\"," + returnValueOutput);
-			}		
+				pw.flush();
+			}	
+			
 		
 		}
 	
@@ -107,9 +145,9 @@ public class PositionFileIO {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PositionFileIO test = new PositionFileIO();
-		HashMap<String, Position> portfolio = test.readpositionCSV("DummyStockPortfolio.csv");
-		System.out.println(portfolio);
+		//PositionFileIO test = new PositionFileIO();
+		//HashMap<String, Position> portfolio = test.readpositionCSV("DummyStockPortfolio.csv");
+		//System.out.println(portfolio);
 				
 	}
 	
@@ -119,6 +157,10 @@ public class PositionFileIO {
 
 	
 	
+	
+		
+
+
 	
 		
 

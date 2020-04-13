@@ -19,10 +19,11 @@ public class Main {
 				+ "\t" + String.format("%-15s","COST BASIS") 
 				+ "\t" + String.format("%-15s", "CURR VALUE") 
 				+ "\t" + String.format("%-10s", "RETURN (%)"));
-		posFile.writePositionCSV("DummyStockPortfoliov2.csv", port);
 		for (String symbol : port.portfolio.keySet()) {
 			System.out.println(port.portfolio.get(symbol));
 		}
+		
+		posFile.writePositionCSV("DummyStockPortfoliov2.csv", port);
 		} catch (FileNotFoundException e) {
 			System.out.println("FileNotFoundException - that is not a valid file name.");
 			System.out.println("Please try entering a new name.");
