@@ -1,12 +1,24 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.FileNotFoundException;
+
 import org.junit.jupiter.api.Test;
 
 class PortfolioTest {
 	
-	PositionFileIO posFile = new PositionFileIO();
-	//ArrayList<Position> portfolio = new ArrayList<Position>(); 
-	Portfolio port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
+	Portfolio port;
+	
+	public PortfolioTest() {
+		PositionFileIO posFile = new PositionFileIO();
+		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
+		try {
+			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
+		} catch (FileNotFoundException e) {
+			System.out.println("File does not exist.");
+			e.printStackTrace();
+		}
+	}
+
 	
 	@Test
 	void testSufficientSharesTrue() {
@@ -42,7 +54,7 @@ class PortfolioTest {
 	
 	@Test
 	void getPositionsTest() {
-		assertEquals(4, port.portfolio.size());
+		assertEquals(5, port.portfolio.size());
 	}
 	
 }
