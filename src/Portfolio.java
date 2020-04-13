@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -210,43 +211,50 @@ public class Portfolio {
 	public static void main(String[] args) {
 		PositionFileIO posFile = new PositionFileIO();
 		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
-		Portfolio port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
-		
-		
-		String continueTrading = "Y";
-		Scanner in = new Scanner(System.in);
-		port.updatePortfolio();
-		//port.printPort();
-		System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
-		continueTrading = in.next();
-		while (!continueTrading.toUpperCase().equals("N")) {
-			System.out.println("buy or sell?");
-			String action = in.next();
-			if (action.equals("buy")) {
-				port.buyStock("ABT", 100);
-				System.out.println();
-				port.updatePortfolio();
-				//port.printPort();
-			}
-			else if (action.equals("add")) {
-				port.addToPosition("AAPL", 20);
-				port.updatePortfolio();				
-			}
-			else if (action.equals("trim")) {
-				port.trimPosition("AAPL", 20);
-				port.updatePortfolio();				
-			}
-			else {
-				System.out.println();
-				port.liquidateStock("GE");
-				System.out.println();
-				port.updatePortfolio();
-				//port.printPort();
-			}
+		Portfolio port;
+		try {
+			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
+			String continueTrading = "Y";
+			Scanner in = new Scanner(System.in);
+			port.updatePortfolio();
+			//port.printPort();
 			System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
 			continueTrading = in.next();
+			while (!continueTrading.toUpperCase().equals("N")) {
+				System.out.println("buy or sell?");
+				String action = in.next();
+				if (action.equals("buy")) {
+					port.buyStock("ABT", 100);
+					System.out.println();
+					port.updatePortfolio();
+					//port.printPort();
+				}
+				else if (action.equals("add")) {
+					port.addToPosition("AAPL", 20);
+					port.updatePortfolio();				
+				}
+				else if (action.equals("trim")) {
+					port.trimPosition("AAPL", 20);
+					port.updatePortfolio();				
+				}
+				else {
+					System.out.println();
+					port.liquidateStock("GE");
+					System.out.println();
+					port.updatePortfolio();
+					//port.printPort();
+				}
+				System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
+				continueTrading = in.next();
+			}
+			in.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		in.close();
+		
+		
+		
 		
 		//port.printPort();
 		
