@@ -1,4 +1,6 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * acts as a runner class to run a trading session
@@ -16,16 +18,19 @@ public class Main {
 //	}
 	
 	public static void main(String[] args) {
-		YahooQuote quote = new YahooQuote();
-		String stockSymbol = "AAAPL";
+		PositionFileIO file = new PositionFileIO();
+		
+		
 		try {
-			quote.isValidSymbol(stockSymbol);
-			System.out.println(stockSymbol + " is currently trading at $" + quote.getLastPrice(stockSymbol));
-		} catch (IllegalStateException e) {
-			System.out.println("You've entered an invalid symbol");
+			HashMap<String, Position> portfolio = new HashMap<String, Position>();
+			portfolio = file.readpositionCSV("DummyStockPortfolio.csv");
+			Portfolio port = new Portfolio(portfolio);
+			if (port.hasSufficientShares("USDCASH", 5000) == true) {
+				System.out.println("Yep");
+			} else System.out.println("You broke");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println("You've entered an invalid symbol");
 		}
 	}
 	

@@ -13,9 +13,8 @@ public class Trade {
 	private String stockSymbol = null;
 	private double amount = 0.0;
 	PositionFileIO file = new PositionFileIO();
-	Portfolio portfolio = new Portfolio(null);
+	Portfolio portfolio = new Portfolio();
 	YahooQuote quote = new YahooQuote();
-	double tradePrice = 0.0;
 	
 	/**
 	 * helper method to be able to loop through the switch statement
@@ -55,7 +54,7 @@ public class Trade {
 						int shares = optionScanner.nextInt();
 						portfolio.hasSufficientShares("USDCASH", shares);
 						
-						tradePrice = quote.getLastPrice(stockSymbol);
+						
 						
 						System.out.println();
 						
