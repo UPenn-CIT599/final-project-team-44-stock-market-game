@@ -1,4 +1,8 @@
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class Position {
 
@@ -115,13 +119,21 @@ public class Position {
 	 * when printing to the console
 	 */
 	public String toString() {
-		return (String.format("%-10s",symbol) 
-				+ "\t"  + String.format("%-10s",shares) 
-				+ "\t" + String.format("%-10s",averageCost) 
-				+ "\t"+ String.format("%-10s",lastPrice) 
-				+ "\t" + String.format("%-15s", costBasis) 
-				+ "\t" + String.format("%-15s", currentValue) 
-				+ "\t" + String.format("%-10s",positionReturn));
+		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+		String sharesOutput = numberFormat.format(getShares());
+        String avgCostOutput = dollarFormat.format(getAverageCost());
+        String lastPriceOutput = dollarFormat.format(getLastPrice());
+        String costBasisOutput = dollarFormat.format(getCostBasis());
+        String currentValueOutput = dollarFormat.format(getCurrentValue());
+        String returnValueOutput = Double.toString(getPositionReturn());
+		return (String.format("%10s",symbol) 
+				+ "\t"  + String.format("%10s",sharesOutput) 
+				+ "\t" + String.format("%10s",avgCostOutput) 
+				+ "\t"+ String.format("%10s",lastPriceOutput) 
+				+ "\t" + String.format("%10s", costBasisOutput) 
+				+ "\t" + String.format("%15s", currentValueOutput) 
+				+ "\t" + String.format("%15s",returnValueOutput));
 	}
 
 	/**

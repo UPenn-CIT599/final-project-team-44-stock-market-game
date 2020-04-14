@@ -12,13 +12,13 @@ public class Main {
 		try {
 		Portfolio port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
 		
-		System.out.println(String.format("%-10s","SYMBOL") 
-				+ "\t" + String.format("%-10s", "SHARES") 
-				+ "\t" + String.format("%-10s", "AVG COST") 
-				+ "\t" + String.format("%-10s", "LAST PRICE") 
-				+ "\t" + String.format("%-15s","COST BASIS") 
-				+ "\t" + String.format("%-15s", "CURR VALUE") 
-				+ "\t" + String.format("%-10s", "RETURN (%)"));
+		System.out.println(String.format("%10s","SYMBOL") 
+				+ "\t" + String.format("%10s", "SHARES") 
+				+ "\t" + String.format("%10s", "AVG COST") 
+				+ "\t" + String.format("%10s", "LAST PRICE") 
+				+ "\t" + String.format("%10s","COST BASIS") 
+				+ "\t" + String.format("%15s", "CURR VALUE") 
+				+ "\t" + String.format("%15s", "RETURN (%)"));
 		for (String symbol : port.portfolio.keySet()) {
 			System.out.println(port.portfolio.get(symbol));
 		}
