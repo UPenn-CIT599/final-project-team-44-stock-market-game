@@ -110,6 +110,9 @@ public class Portfolio {
 	}
 	*/
 	
+	//  We don't need 2 methods to buy and sell. We can pass the shares in as positive
+	//  for a buy and negative for a sell that way it keeps our code dry
+	
 	/**
 	 * Buys stocks in the portfolio. If the position does not exist, it adds it to the portfolio.
 	 * If the position already exists, it recalculates shares and average cost and updates the
@@ -117,7 +120,7 @@ public class Portfolio {
 	 * @param symbol
 	 * @param shares
 	 */
-	public void buyStock(String symbol, double shares) {
+	public void tradeStock(String symbol, double shares) {
 		try {
 			Position p;
 			String stockSymbol = symbol.toUpperCase();
@@ -144,6 +147,8 @@ public class Portfolio {
 	}
 
 	
+	
+	
 	/**
 	 * Sells stocks in the portfolio. If the shares is equal to the portfolio's currently held
 	 * shares, the position is removed from the portfolio. If the shares is less than held
@@ -151,30 +156,30 @@ public class Portfolio {
 	 * @param symbol
 	 * @param shares
 	 */
-	public void sellStock(String symbol, double shares) {
-		try {
-			String stockSymbol = symbol.toUpperCase();
-			double price = quote.getLastPrice(stockSymbol);
-			double netMoney = price * shares;
-			
-			if (shares == portfolio.get(stockSymbol).getShares()) {
-				portfolio.remove(stockSymbol);
-			}
-			else {
-				double newShares = portfolio.get(stockSymbol).getShares() - shares;
-				double newAvgCost = (portfolio.get(stockSymbol).getCostBasis() - netMoney) / newShares;
-				Position p = new Position(stockSymbol, newShares, newAvgCost);
-				portfolio.put(symbol, p);
-			}
-			this.updateCash(netMoney);
-			
-			System.out.println("You sold " + shares + " shares of " + stockSymbol + " at $" + price);
-		
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	public void sellStock(String symbol, double shares) {
+//		try {
+//			String stockSymbol = symbol.toUpperCase();
+//			double price = quote.getLastPrice(stockSymbol);
+//			double netMoney = price * shares;
+//			
+//			if (shares == portfolio.get(stockSymbol).getShares()) {
+//				portfolio.remove(stockSymbol);
+//			}
+//			else {
+//				double newShares = portfolio.get(stockSymbol).getShares() - shares;
+//				double newAvgCost = (portfolio.get(stockSymbol).getCostBasis() - netMoney) / newShares;
+//				Position p = new Position(stockSymbol, newShares, newAvgCost);
+//				portfolio.put(symbol, p);
+//			}
+//			this.updateCash(netMoney);
+//			
+//			System.out.println("You sold " + shares + " shares of " + stockSymbol + " at $" + price);
+//		
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 	
 	
 	
@@ -226,6 +231,8 @@ public class Portfolio {
 		this.updateCash(marketValue);
 	}
 	*/
+	
+	//  Do we still need these?  looks like we update all this in the tradeStock method above
 	
 	/**
 	 * updates the current total cash in the portfolio when 
@@ -283,50 +290,6 @@ public class Portfolio {
 	//ideally this goes in a separate class, still toying with 
 	//ideas here and don't have a final product on what this 
 	//will look like in the separate class
-	public static void main(String[] args) {
-		PositionFileIO posFile = new PositionFileIO();
-		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
-		Portfolio port;
-		try {
-			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
-			String continueTrading = "Y";
-			Scanner in = new Scanner(System.in);
-			port.updatePortfolio();
-			//port.printPort();
-			System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
-			continueTrading = in.next();
-			while (!continueTrading.toUpperCase().equals("N")) {
-				System.out.println("buy or sell?");
-				String action = in.next();
-				if (action.equals("buy")) {
-					port.buyStock("AVGO", 100);
-					System.out.println();
-					port.updatePortfolio();
-					//port.printPort();
-				}
-				else if (action.equals("add")) {
-					port.buyStock("AAPL", 20);
-					port.updatePortfolio();				
-				}
-				else if (action.equals("trim")) {
-					port.sellStock("ABT", 20);
-					port.updatePortfolio();				
-				}
-				else {
-					System.out.println();
-					port.sellStock("GE", 10);
-					System.out.println();
-					port.updatePortfolio();
-					//port.printPort();
-				}
-				System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
-				continueTrading = in.next();
-			}
-			in.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		
 		
@@ -356,6 +319,5 @@ public class Portfolio {
 		//test - should return fales
 		System.out.println("Expect false: " + port.hasSufficientShares("GE", 11));
 	*/
-	}
 	
 }
