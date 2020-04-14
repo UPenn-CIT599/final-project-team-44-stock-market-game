@@ -12,7 +12,7 @@ class PortfolioTest {
 		PositionFileIO posFile = new PositionFileIO();
 		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
 		try {
-			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio.csv"));
+			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio - Copy.csv"));
 		} catch (FileNotFoundException e) {
 			System.out.println("File does not exist.");
 			e.printStackTrace();
@@ -48,8 +48,20 @@ class PortfolioTest {
 	
 	@Test
 	void liquidateStock() {
-		port.liquidateStock("GE");
+		port.sellStock("GE", 10);
 		assertEquals(false, port.portfolio.containsKey("GE"));
+	}
+	
+	@Test void addStock() {
+		double currShares = port.portfolio.get("AAPL").getShares();
+		port.buyStock("AAPL", 1);
+		assertEquals(currShares + 1, port.portfolio.get("AAPL").getShares());
+	}
+	
+	@Test void trimStock() {
+		double currShares = port.portfolio.get("AAPL").getShares();
+		port.sellStock("AAPL", 1);
+		assertEquals(currShares - 1, port.portfolio.get("AAPL").getShares());
 	}
 	
 	@Test

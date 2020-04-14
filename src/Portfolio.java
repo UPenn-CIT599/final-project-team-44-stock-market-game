@@ -93,6 +93,7 @@ public class Portfolio {
 	 * @param symbol
 	 * @param shares
 	 */
+	/*
 	public void buyStock(String symbol, double shares) {
 		try {
 			String stockSymbol = symbol.toUpperCase();
@@ -107,6 +108,74 @@ public class Portfolio {
 			e.printStackTrace();
 		}
 	}
+	*/
+	
+	/**
+	 * Buys stocks in the portfolio. If the position does not exist, it adds it to the portfolio.
+	 * If the position already exists, it recalculates shares and average cost and updates the
+	 * position in the portfolio.
+	 * @param symbol
+	 * @param shares
+	 */
+	public void buyStock(String symbol, double shares) {
+		try {
+			Position p;
+			String stockSymbol = symbol.toUpperCase();
+			double price = quote.getLastPrice(stockSymbol);
+			double netMoney = price * shares;
+			
+			if (!portfolio.containsKey(stockSymbol)) {
+				p = new Position(stockSymbol, shares, netMoney);
+			}
+			else {
+				double newShares = portfolio.get(stockSymbol).getShares() + shares;
+				double newAvgCost = (portfolio.get(stockSymbol).getCostBasis() + netMoney) / newShares;
+				p = new Position(stockSymbol, newShares, newAvgCost);
+			}
+
+			portfolio.put(symbol, p);
+			this.updateCash(-netMoney);
+			System.out.println("You bought " + shares + " shares of " + stockSymbol + " at $" + price);
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
+	/**
+	 * Sells stocks in the portfolio. If the shares is equal to the portfolio's currently held
+	 * shares, the position is removed from the portfolio. If the shares is less than held
+	 * shares, the position is updated.
+	 * @param symbol
+	 * @param shares
+	 */
+	public void sellStock(String symbol, double shares) {
+		try {
+			String stockSymbol = symbol.toUpperCase();
+			double price = quote.getLastPrice(stockSymbol);
+			double netMoney = price * shares;
+			
+			if (shares == portfolio.get(stockSymbol).getShares()) {
+				portfolio.remove(stockSymbol);
+			}
+			else {
+				double newShares = portfolio.get(stockSymbol).getShares() - shares;
+				double newAvgCost = (portfolio.get(stockSymbol).getCostBasis() - netMoney) / newShares;
+				Position p = new Position(stockSymbol, newShares, newAvgCost);
+				portfolio.put(symbol, p);
+			}
+			this.updateCash(netMoney);
+			
+			System.out.println("You sold " + shares + " shares of " + stockSymbol + " at $" + price);
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	
 	/**
@@ -115,6 +184,7 @@ public class Portfolio {
 	 * in an owned position
 	 * @param symbol
 	 */
+	/*
 	public void liquidateStock(String symbol) {
 		String stockSymbol = symbol.toUpperCase();
 		double price = portfolio.get(stockSymbol).getLastPrice();
@@ -123,7 +193,9 @@ public class Portfolio {
 		System.out.println("You liquidated your position of " + stockSymbol + " at $" + price);
 		portfolio.remove(stockSymbol);
 	}
+	*/
 	
+	/*
 	public void addToPosition(String symbol, double shares) {
 		String stockSymbol = symbol.toUpperCase();
 		Position origP = portfolio.get(stockSymbol);
@@ -153,6 +225,7 @@ public class Portfolio {
 		portfolio.put(stockSymbol, updatedPosition);
 		this.updateCash(marketValue);
 	}
+	*/
 	
 	/**
 	 * updates the current total cash in the portfolio when 
@@ -184,6 +257,8 @@ public class Portfolio {
 		}
 		this.printPort();
 	}
+	
+	
 	/**
 	 * Updates the porfolio to include the most recent trade
 	 * when an individual buys or sells
@@ -191,13 +266,13 @@ public class Portfolio {
 	 * if not already in the portfolio/deletes position if they
 	 * sell all their shares in a specific stock
 	 */
-	public void updatePositions() {
+	//public void updatePositions() {
 		//may or may not be used based on above methods
 		//need to update this code
 		//need to think about how to add positions when they don't exist
 		//as well as how to delete positions if the individual sells all
 		//Cash position needs to update every time as well
-	}
+	//}
 	
 
 	/**
@@ -224,22 +299,22 @@ public class Portfolio {
 				System.out.println("buy or sell?");
 				String action = in.next();
 				if (action.equals("buy")) {
-					port.buyStock("ABT", 100);
+					port.buyStock("AVGO", 100);
 					System.out.println();
 					port.updatePortfolio();
 					//port.printPort();
 				}
 				else if (action.equals("add")) {
-					port.addToPosition("AAPL", 20);
+					port.buyStock("AAPL", 20);
 					port.updatePortfolio();				
 				}
 				else if (action.equals("trim")) {
-					port.trimPosition("AAPL", 20);
+					port.sellStock("ABT", 20);
 					port.updatePortfolio();				
 				}
 				else {
 					System.out.println();
-					port.liquidateStock("GE");
+					port.sellStock("GE", 10);
 					System.out.println();
 					port.updatePortfolio();
 					//port.printPort();
