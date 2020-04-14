@@ -20,9 +20,9 @@ public class Portfolio {
 	 * Constructs the Portfolio object
 	 * @param positions
 	 */
-	public Portfolio(HashMap<String, Position> positions) {
-		this.portfolio = positions;
-	}
+//	public Portfolio(HashMap<String, Position> positions) {
+//		this.portfolio = positions;
+//	}
 	
 	/**
 	 * returns all Position objects read from csv
@@ -71,21 +71,23 @@ public class Portfolio {
 	 * @param shares
 	 * @return true if there is enough cash to buy the stock, false if there is not enough cash.
 	 */
-	public boolean hasSufficientCash(String symbol, double shares) {
-		try {
-			double price = quote.getLastPrice(symbol);
-			double cashToSpend = price * shares;
-			double currCash = portfolio.get("USDCASH").getCurrentValue();
-			if (currCash < cashToSpend) {
-				return false;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return true;
-	}
+	
+//	NOT WORKING	
+//	public boolean hasSufficientCash(String symbol, double shares) {
+//		try {
+//			double price = quote.getLastPrice(symbol);
+//			double cashToSpend = price * shares;
+//			double currCash = portfolio.get("USDCASH").getCurrentValue();
+//			if (currCash < cashToSpend) {
+//				return false;
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		return true;
+//	}
 	
 	/**
 	 * adds positions to the existing portfolio when the
