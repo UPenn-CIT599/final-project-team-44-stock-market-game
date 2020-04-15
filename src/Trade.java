@@ -13,7 +13,7 @@ public class Trade {
 	private String stockSymbol = null;
 	private double amount = 0.0;
 	private HashMap<String, Position> readPortfolio = new HashMap<String, Position>();
-	private Portfolio portfolio = new Portfolio(readPortfolio);
+	private Portfolio portfolio = new Portfolio(readPortfolio);  // may need to take this out and put in the loop
 	YahooQuote quote = new YahooQuote();
 	
 	/**
@@ -27,6 +27,7 @@ public class Trade {
 		int optionSelection = 0;
 		
 		while (optionSelection < 6) {	
+			System.out.println();
 			System.out.println("What would you like to do next?  Please choose and enter a number from the following options");
 			System.out.println("   1. buy stock");
 			System.out.println("   2. sell stock");
@@ -45,14 +46,14 @@ public class Trade {
 						quote.isValidSymbol(stockSymbol); 
 						System.out.println(stockSymbol + " is currently trading at $" + quote.getLastPrice(stockSymbol));
 						
-						// need to check current portfolio for cash position
-						// need some help on this one
-						System.out.println("You currently have " + "" + " available to trade");
-						
-						// ask the user how many shares they would like to buy and check to make sure they have enough cash
-						System.out.println("How many shares would you like to buy?");
+// need to check current portfolio for cash position
+// need some help on this one
+						System.out.println("You currently have " + "" + " available to trade.  How many shares would you like to buy?");
 						int shares = optionScanner.nextInt();
-						// can probably add the throws exception to the method so we don't need the if statement
+						
+// code breaks here
+						
+// can probably add the throws exception to the method so we don't need the if statement
 						if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
 							//give the user the options to execute or cancel the trade
 							System.out.println("Please choose and enter a number from the following:");
@@ -63,7 +64,7 @@ public class Trade {
 							switch (optionSelection) {
 								case 1:
 									portfolio.tradeStock(stockSymbol, shares);
-									// do we have the trade price stored globally?
+// do we have the trade price stored globally?
 									System.out.println("You bought " + shares + " of " + stockSymbol + " at " + "");
 									break;
 								case 2: 
@@ -87,17 +88,17 @@ public class Trade {
 						System.out.println("Please enter the stock symbol you would like to sell.");
 						stockSymbol = optionScanner.next();
 						quote.isValidSymbol(stockSymbol); 
-						// do we need a checkPositions method in Portfolio class to make sure they have the stock?
+// do we need a checkPositions method in Portfolio class to make sure they have the stock?
 						System.out.println(stockSymbol + " is currently trading at $" + quote.getLastPrice(stockSymbol));
 						
-						// need to check current portfolio for shares of the stock
-						// need some help on this one
-						System.out.println("You currently have " + "" + " available to trade");
-						
-						// ask the user how many shares they would like to sell and check to make sure they have enough
-						System.out.println("How many shares would you like to sell?");
+// need to check current portfolio for shares of the stock
+// need some help on this one
+						System.out.println("You currently have " + "" + " available to trade.  How many shares would you like to sell?");
 						int shares = optionScanner.nextInt();
 						// can probably add the throws exception to the method so we don't need the if statement
+						
+// code breaks here						
+						
 						if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
 							//give the user the options to execute or cancel the trade
 							System.out.println("Please choose and enter a number from the following:");
@@ -108,7 +109,7 @@ public class Trade {
 							switch (optionSelection) {
 								case 1:
 									portfolio.tradeStock(stockSymbol, -shares);
-									//do we have the trade price stored globally?
+//do we have the trade price stored globally?
 									System.out.println("You sold " + shares + " of " + stockSymbol + " at " + "");
 									break;
 								case 2: 
@@ -129,7 +130,7 @@ public class Trade {
 					stockSymbol = optionScanner.next();
 					try {
 						quote.isValidSymbol(stockSymbol);
-						System.out.println(stockSymbol + "is currently trading at $" + quote.getLastPrice(stockSymbol));
+						System.out.println(stockSymbol + " is currently trading at $" + quote.getLastPrice(stockSymbol));
 						
 						// after getting the first quote it enters into the options helper method
 						this.options();
@@ -143,14 +144,18 @@ public class Trade {
 					break;
 				case 4:
 					System.out.println("How much would you like to deposit?");
-					// need error handling here
+// need error handling here
 					amount = optionScanner.nextDouble();
-					portfolio.updateCash(amount); //updates the cash in the new portfolio to what the user input
-					// after updating the cash it enters into the helper options method
+					
+// code breaks here					
+					
+					portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
 					break;
 				case 5:
 					System.out.println("How much would you like to withdraw?");
 					amount = optionScanner.nextDouble();
+					
+// code breaks here					
 					
 					// again, should we have the throws exception in the method?
 					if(portfolio.hasSufficientShares("USDCASH", amount) == true) {
@@ -245,7 +250,13 @@ public class Trade {
 						System.out.println("Please enter your file path and/or name.");
 						fileName = s.next();
 						readPortfolio = file.readpositionCSV(fileName);
+						Portfolio portfolio = new Portfolio(readPortfolio);
+						portfolio.printPort();
+						
 						// make sure this makes sense after helper method is established
+						
+// need code in here to make sure that it doesn't skip step or maybe in the error handling
+						
 						this.options();
 						break;
 					} catch (FileNotFoundException e) {
@@ -275,6 +286,9 @@ public class Trade {
 							System.out.println("How much would you like to deposit?");
 							// need error handling here
 							amount = s.nextDouble();
+					
+// Code Breaks here							
+							
 							portfolio.updateCash(amount); //updates the cash in the new portfolio to what the user input
 							// after updating the cash it enters into the helper options method
 							this.options();
@@ -288,7 +302,7 @@ public class Trade {
 							stockSymbol = s.next();
 							try {
 								quote.isValidSymbol(stockSymbol);
-								System.out.println(stockSymbol + "is currently trading at $" + quote.getLastPrice(stockSymbol));
+								System.out.println(stockSymbol + " is currently trading at $" + quote.getLastPrice(stockSymbol));
 								
 								// after getting the first quote it enters into the options helper method
 								this.options();
@@ -306,6 +320,9 @@ public class Trade {
 					break;
 			}
 		}
+	
+// code broke here		
+		
 		System.out.println("You have exited the trading session.  Below is your current portfolio.");
 		portfolio.printPort();
 		try {
