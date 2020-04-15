@@ -17,22 +17,6 @@ public class Main {
 //		tradingSession.runTradingSession();
 //	}
 	
-	public static void main(String[] args) {
-		PositionFileIO file = new PositionFileIO();
-		
-		
-		try {
-			HashMap<String, Position> portfolio = new HashMap<String, Position>();
-			portfolio = file.readpositionCSV("DummyStockPortfolio.csv");
-			Portfolio port = new Portfolio(portfolio);
-			if (port.hasSufficientShares("USDCASH", 5000) == true) {
-				System.out.println("Yep");
-			} else System.out.println("You broke");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	//Do we still need the below?  I believe it's the same as the printPort method in the Portfolio class
 	/**

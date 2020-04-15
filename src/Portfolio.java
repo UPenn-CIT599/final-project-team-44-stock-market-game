@@ -20,9 +20,9 @@ public class Portfolio {
 	 * Constructs the Portfolio object
 	 * @param positions
 	 */
-//	public Portfolio(HashMap<String, Position> positions) {
-//		this.portfolio = positions;
-//	}
+	public Portfolio(HashMap<String, Position> positions) {
+		this.portfolio = positions;
+	}
 	
 	/**
 	 * returns all Position objects read from csv
