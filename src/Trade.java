@@ -22,7 +22,7 @@ public class Trade {
 	 * provides the individual with 6 options: buy stock, sell stock, get a stock quote,
 	 * deposit cash, withdraw cash, or exit the trading session
 	 */
-	private void options() {
+	private void options(Portfolio port) {
 		Scanner optionScanner = new Scanner(System.in);
 		int optionSelection = 0;
 		
@@ -135,7 +135,7 @@ public class Trade {
 					System.out.println(stockSymbol + " is currently trading at $" + quote.getLastPrice(stockSymbol));
 					
 					// after getting the first quote it enters into the options helper method
-					this.options();
+					this.options(port);
 				} catch (IllegalStateException e1) {
 					System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
 					stockSymbol = optionScanner.next();
@@ -259,7 +259,7 @@ public class Trade {
 						
 // need code in here to make sure that it doesn't skip step or maybe in the error handling
 						
-						this.options();
+						this.options(portfolio);
 						break;
 					} catch (FileNotFoundException e) {
 						System.out.println("Could not find the file with the provided path and/or name.");
@@ -293,7 +293,7 @@ public class Trade {
 							
 							portfolio.updateCash(amount); //updates the cash in the new portfolio to what the user input
 							// after updating the cash it enters into the helper options method
-							this.options();
+							this.options(portfolio);
 							break;
 						case 2:
 							/**
@@ -307,7 +307,7 @@ public class Trade {
 								System.out.println(stockSymbol + " is currently trading at $" + quote.getLastPrice(stockSymbol));
 								
 								// after getting the first quote it enters into the options helper method
-								this.options();
+								this.options(portfolio);
 							} catch (IllegalStateException e1) {
 								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
 								stockSymbol = s.next();
@@ -318,7 +318,7 @@ public class Trade {
 							break;
 					}
 					// make sure this makes sense after helper method is established
-					this.options();
+					this.options(portfolio);
 					break;
 			}
 		}
