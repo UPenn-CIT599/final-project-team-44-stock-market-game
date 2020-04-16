@@ -4,6 +4,9 @@ import java.io.InputStreamReader;
 //import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
 //import java.util.ArrayList;
 //import java.util.Arrays;
 import java.util.Scanner;
@@ -177,6 +180,49 @@ public class YahooQuote {
 		return price;
 	}
 	
+	public String getField(String symbol, String field) throws IllegalStateException, IOException {
+		String json = this.getJSON(symbol);
+		//use regex to find the regularMarketPrice from the returned response. This will then be used to find the 
+		//latest market price.
+		//Pattern pricePattern = Pattern.compile("regularMarketPrice\":(.+?),");
+		Pattern fieldPattern = Pattern.compile(field + "\":(.+?),");
+		Matcher matcher1 = fieldPattern.matcher(json);
+		matcher1.find();
+		
+		String fieldReturn = matcher1.group(1);
+		return fieldReturn;
+	}
+	
+	public void indicesData() {
+		HashMap<String, String> indices = new HashMap<String, String>();
+		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+		indices.put("^dji", "Dow");
+		indices.put("^gspc", "S&P 500");
+		indices.put("^ixic", "Nasdaq");
+		
+		for (String index : indices.keySet()) {
+			try {
+				double price = Double.parseDouble(this.getField(index, "regularMarketPrice"));
+				String priceString = numberFormat.format(price);
+				double prevClose = Double.parseDouble(this.getField(index, "chartPreviousClose"));
+				double pctChange = ((price / prevClose) - 1) * 100;
+				String pctChangeString = String.format("%.2f", pctChange) + "%";
+				System.out.println("The " + indices.get(index) + " is currently trading at " + priceString + ", a " +
+						pctChangeString + " difference from yeseterday's close.");
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	}
+	
 	/**
 	 * tester main to make sure the data is being read in correctly and usable
 	 * throughout the rest of the program
@@ -185,18 +231,17 @@ public class YahooQuote {
 	public static void main(String[] args) {
 		YahooQuote quote = new YahooQuote();
 		Scanner in = new Scanner(System.in);
-		
+		/*
 		System.out.println("please put in a symbol");
 		String symbol = in.next().toUpperCase();
 		
 		boolean validSymbol = false;
 		while (validSymbol == false) {
 			try {
-				String json = quote.getJSON(symbol).toString();
-				validSymbol = quote.isValidSymbol(json);
+				validSymbol = quote.isValidSymbol(symbol);
 				System.out.println(validSymbol);
 				if (validSymbol) {
-					System.out.println(quote.getLastPrice(json));
+					System.out.println(quote.getLastPrice(symbol));
 				}
 				else {
 					symbol = in.next();
@@ -210,6 +255,10 @@ public class YahooQuote {
 				symbol = in.next();
 			}
 		}
+
+		*/
+
+		quote.indicesData();
 		in.close();
 	}
 }
