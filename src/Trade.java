@@ -41,7 +41,7 @@ public class Trade {
 					// ask the user for a stock symbol and check to make sure it is valid
 					// then gives the user a quote with the available cash in their portfolio
 					System.out.println("Please enter the stock symbol you would like to buy.");
-					stockSymbol = optionScanner.next();
+					stockSymbol = optionScanner.next().toUpperCase();
 					quote.isValidSymbol(stockSymbol); 
 					System.out.println(stockSymbol + " is currently trading at $" + quote.getLastPrice(stockSymbol));
 					
@@ -53,6 +53,9 @@ public class Trade {
 // code breaks here
 					
 // can probably add the throws exception to the method so we don't need the if statement
+					
+					
+					portfolio.printPort();
 					if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
 						//give the user the options to execute or cancel the trade
 						System.out.println("Please choose and enter a number from the following:");
@@ -98,7 +101,7 @@ public class Trade {
 					
 // code breaks here						
 					
-					if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
+					if (portfolio.hasSufficientShares(stockSymbol, shares) == true) {
 						//give the user the options to execute or cancel the trade
 						System.out.println("Please choose and enter a number from the following:");
 						System.out.println("   1. execute trade");
