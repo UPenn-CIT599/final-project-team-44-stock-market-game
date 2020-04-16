@@ -12,10 +12,10 @@ public class Main {
 	 * single main method that runs the entire trading session
 	 * @param args
 	 */
-//	public static void main(String[] args) {
-//		Trade tradingSession = new Trade();
-//		tradingSession.runTradingSession();
-//	}
+	public static void main(String[] args) {
+		Trade tradingSession = new Trade();
+		tradingSession.runTradingSession();
+	}
 	
 	
 	//Do we still need the below?  I believe it's the same as the printPort method in the Portfolio class
