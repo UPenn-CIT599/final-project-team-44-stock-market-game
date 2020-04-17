@@ -1,10 +1,6 @@
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.text.DecimalFormat;
-
 
 public class Position {
 
@@ -28,7 +24,7 @@ public class Position {
 		symbol = currSymbol.toUpperCase();
 		shares = currShares;
 		//USDCASH is the actual cash position, checking and setting cost to 1
-		//which equal one US dollar
+		//which equals one US dollar
 		if (symbol.equals("USDCASH")) {
 			averageCost = 1.0;
 		}
@@ -36,7 +32,7 @@ public class Position {
 			averageCost = currAverageCost;
 		}
 		
-		//Last price is grabbed from the StockAPICall class to the API based on the position's symbol.
+		//Last price is grabbed from the YahooQuote class to the url endpoint based on the position's symbol.
 		//The last price grabbed is used to calculate current value and position return.
 		
 		if (symbol.equals("USDCASH")) {
@@ -120,8 +116,7 @@ public class Position {
 	 * helper method to format the position object 
 	 * when printing to the console
 	 */
-	public String toString() {
-		
+	public String toString() {		
 		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
 		String sharesOutput = numberFormat.format(getShares());
@@ -129,16 +124,14 @@ public class Position {
         String lastPriceOutput = dollarFormat.format(getLastPrice());
         String costBasisOutput = dollarFormat.format(getCostBasis());
         String currentValueOutput = dollarFormat.format(getCurrentValue());
-        
-        DecimalFormat returnNewFormat = new DecimalFormat("0.00");
-        String returnValueOutput = returnNewFormat.format(getPositionReturn());
+        String returnValueOutput = String.format("%.2f", getPositionReturn());
 		return (String.format("%10s",symbol) 
 				+ "\t"  + String.format("%10s",sharesOutput) 
 				+ "\t" + String.format("%10s",avgCostOutput) 
 				+ "\t"+ String.format("%10s",lastPriceOutput) 
-				+ "\t" + String.format("%15s", costBasisOutput) 
-				+ "\t" + String.format("%15s", currentValueOutput) 
-				+ "\t" + String.format("%15s",returnValueOutput));
+				+ "\t" + String.format("%18s", costBasisOutput) 
+				+ "\t" + String.format("%18s", currentValueOutput) 
+				+ "\t" + String.format("%10s",returnValueOutput));
 	}
 
 	/**
@@ -182,15 +175,15 @@ public class Position {
 		this.positionReturn = positionReturn;
 	}
 
-//	public static void main(String[] args) {
-//		Position test = new Position("AAPL", 1, 127.40);
-//		System.out.println(test);
+	public static void main(String[] args) {
+		Position test = new Position("AAPL", 1, 127.40);
+		System.out.println(test);
 //		System.out.println(test.getShares());
 //		System.out.println(test.getCostBasis());
 //		System.out.println(test.getCurrentValue());
 //		System.out.println(test.getPositionReturn());
 //		
 //		System.out.println(test);
-//	}
+	}
 	
 }
