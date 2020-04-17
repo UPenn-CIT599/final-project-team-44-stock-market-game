@@ -3,6 +3,8 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.text.DecimalFormat;
+
 
 public class Position {
 
@@ -31,7 +33,7 @@ public class Position {
 			averageCost = 1.0;
 		}
 		else {
-			averageCost = Math.round(currAverageCost * 100) / 100.00;
+			averageCost = currAverageCost;
 		}
 		
 		//Last price is grabbed from the StockAPICall class to the API based on the position's symbol.
@@ -49,10 +51,10 @@ public class Position {
 			}
 		}
 		
-		costBasis = Math.round(shares * averageCost * 100) / 100.00;
-		currentValue = Math.round(shares * lastPrice * 100) / 100.00;
+		costBasis = shares * averageCost;
+		currentValue = shares * lastPrice;
 		//position return will be calculated to the nearest one hundredth of a percentage point.
-		positionReturn = Math.round((currentValue / costBasis - 1) * 10000) / 100.0;
+		positionReturn = (currentValue / costBasis - 1) * 100;
 	}
 	
 	/**
@@ -119,6 +121,10 @@ public class Position {
 	 * when printing to the console
 	 */
 	public String toString() {
+		
+		
+
+		
 		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
 		String sharesOutput = numberFormat.format(getShares());
@@ -126,12 +132,14 @@ public class Position {
         String lastPriceOutput = dollarFormat.format(getLastPrice());
         String costBasisOutput = dollarFormat.format(getCostBasis());
         String currentValueOutput = dollarFormat.format(getCurrentValue());
-        String returnValueOutput = Double.toString(getPositionReturn());
+        
+        DecimalFormat returnNewFormat = new DecimalFormat("0.00");
+        String returnValueOutput = returnNewFormat.format(getPositionReturn());
 		return (String.format("%10s",symbol) 
 				+ "\t"  + String.format("%10s",sharesOutput) 
 				+ "\t" + String.format("%10s",avgCostOutput) 
 				+ "\t"+ String.format("%10s",lastPriceOutput) 
-				+ "\t" + String.format("%10s", costBasisOutput) 
+				+ "\t" + String.format("%15s", costBasisOutput) 
 				+ "\t" + String.format("%15s", currentValueOutput) 
 				+ "\t" + String.format("%15s",returnValueOutput));
 	}

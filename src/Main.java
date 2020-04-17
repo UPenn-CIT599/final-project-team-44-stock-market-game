@@ -12,10 +12,10 @@ public class Main {
 	 * single main method that runs the entire trading session
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Trade tradingSession = new Trade();
 		tradingSession.runTradingSession();
-	}
+	}*/
 	
 	
 	//Do we still need the below?  I believe it's the same as the printPort method in the Portfolio class
@@ -24,7 +24,7 @@ public class Main {
 	 * for easy reading by the individual
 	 * @param args
 	 */
-	/**
+	
 	public static void main(String[] args) {
 		PositionFileIO posFile = new PositionFileIO();
 		try {
@@ -34,9 +34,10 @@ public class Main {
 				+ "\t" + String.format("%10s", "SHARES") 
 				+ "\t" + String.format("%10s", "AVG COST") 
 				+ "\t" + String.format("%10s", "LAST PRICE") 
-				+ "\t" + String.format("%10s","COST BASIS") 
+				+ "\t" + String.format("%15s","COST BASIS") 
 				+ "\t" + String.format("%15s", "CURR VALUE") 
 				+ "\t" + String.format("%15s", "RETURN (%)"));
+	
 		for (String symbol : port.portfolio.keySet()) {
 			System.out.println(port.portfolio.get(symbol));
 		}
@@ -50,5 +51,5 @@ public class Main {
 		//System.out.println(portfolio.get(0).getSymbol());
 		
 	}
-	*/
+	
 }
