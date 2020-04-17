@@ -8,6 +8,7 @@ import java.util.*;
  * @author jarod
  *
  */
+
 public class Portfolio {
 	
 	/**
@@ -20,6 +21,7 @@ public class Portfolio {
 	 * Constructs the Portfolio object
 	 * @param positions
 	 */
+	
 	public Portfolio(HashMap<String, Position> positions) {
 		this.portfolio = positions;
 	}
@@ -28,6 +30,7 @@ public class Portfolio {
 	 * returns all Position objects read from csv
 	 * @return
 	 */
+	
 	public HashMap<String, Position> getPositions() {
 		return portfolio;
 	}
@@ -38,6 +41,7 @@ public class Portfolio {
 	 * It should only be accessed via the updatePortfolio method as that will print the
 	 * portfolio with updated prices.
 	 */
+	
 	public void printPort() {
 		System.out.println(String.format("%10s","SYMBOL") 
 		+ "\t" + String.format("%10s", "SHARES") 
@@ -59,64 +63,14 @@ public class Portfolio {
 	 * @return true if there are sufficient shares to sell, false if there are not
 	 * sufficient shares to sell.
 	 */
+	
 	public boolean hasSufficientShares(String symbol, double shares) {
 		double currentShares = portfolio.get(symbol).getShares();
 		if (currentShares >= shares) {
 			return true;
 		} else return false;
 	}
-	
-	/**
-	 * Checks the portfolio to make sure it has sufficient cash to buy the desired
-	 * shares of the stock..
-	 * @param symbol
-	 * @param shares
-	 * @return true if there is enough cash to buy the stock, false if there is not enough cash.
-	 */
-	
-//	NOT WORKING	
-//	public boolean hasSufficientCash(String symbol, double shares) {
-//		try {
-//			double price = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));;
-//			double cashToSpend = price * shares;
-//			double currCash = portfolio.get("USDCASH").getCurrentValue();
-//			if (currCash < cashToSpend) {
-//				return false;
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		return true;
-//	}
-	
-	/**
-	 * adds positions to the existing portfolio when the
-	 * individual wants to buy stock
-	 * @param symbol
-	 * @param shares
-	 */
-	/*
-	public void buyStock(String symbol, double shares) {
-		try {
-			String stockSymbol = symbol.toUpperCase();
-			double price = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));;
-			double marketValue = price * shares;
-			Position p = new Position(stockSymbol, shares, price);
-			portfolio.put(symbol, p);
-			this.updateCash(-marketValue);
-			System.out.println("You bought " + shares + " shares of " + stockSymbol + " at $" + price);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	*/
-	
-	//  We don't need 2 methods to buy and sell. We can pass the shares in as positive
-	//  for a buy and negative for a sell that way it keeps our code dry
-	
+
 	/**
 	 * trades stocks in the portfolio. If the position does not exist, it adds it to the portfolio.
 	 * If the position already exists, it recalculates shares and average cost and updates the
@@ -125,6 +79,7 @@ public class Portfolio {
 	 * @param symbol
 	 * @param shares
 	 */
+	
 	public void tradeStock(String symbol, double shares) {
 		try {
 			Position p;
@@ -171,90 +126,6 @@ public class Portfolio {
 		}
 	}
 
-	/**
-	 * Sells stocks in the portfolio. If the shares is equal to the portfolio's currently held
-	 * shares, the position is removed from the portfolio. If the shares is less than held
-	 * shares, the position is updated.
-	 * @param symbol
-	 * @param shares
-	 */
-//	public void sellStock(String symbol, double shares) {
-//		try {
-//			String stockSymbol = symbol.toUpperCase();
-//			double price = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));;
-//			double netMoney = price * shares;
-//			
-//			if (shares == portfolio.get(stockSymbol).getShares()) {
-//				portfolio.remove(stockSymbol);
-//			}
-//			else {
-//				double newShares = portfolio.get(stockSymbol).getShares() - shares;
-//				double newAvgCost = (portfolio.get(stockSymbol).getCostBasis() - netMoney) / newShares;
-//				Position p = new Position(stockSymbol, newShares, newAvgCost);
-//				portfolio.put(symbol, p);
-//			}
-//			this.updateCash(netMoney);
-//			
-//			System.out.println("You sold " + shares + " shares of " + stockSymbol + " at $" + price);
-//		
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-	
-	
-	
-	/**
-	 * removes the entirety of a position from the portfolio
-	 * if the individual wants to sell all their shares
-	 * in an owned position
-	 * @param symbol
-	 */
-	/*
-	public void liquidateStock(String symbol) {
-		String stockSymbol = symbol.toUpperCase();
-		double price = portfolio.get(stockSymbol).getLastPrice();
-		double marketValue = portfolio.get(stockSymbol).getCurrentValue();
-		this.updateCash(marketValue);
-		System.out.println("You liquidated your position of " + stockSymbol + " at $" + price);
-		portfolio.remove(stockSymbol);
-	}
-	*/
-	
-	/*
-	public void addToPosition(String symbol, double shares) {
-		String stockSymbol = symbol.toUpperCase();
-		Position origP = portfolio.get(stockSymbol);
-		double price = origP.getLastPrice();
-		double origShares = origP.getShares();
-		double origCostBasis = origP.getCostBasis();
-		double marketValue = price * shares;
-		double newShares = origShares + shares;
-		double newAvgCost = (origCostBasis + marketValue) / newShares;
-		
-		Position updatedPosition = new Position(stockSymbol, newShares, newAvgCost);
-		portfolio.put(stockSymbol, updatedPosition);
-		this.updateCash(-marketValue);
-	}
-	
-	public void trimPosition(String symbol, double shares) {
-		String stockSymbol = symbol.toUpperCase();
-		Position origP = portfolio.get(stockSymbol);
-		double price = origP.getLastPrice();
-		double origShares = origP.getShares();
-		double origCostBasis = origP.getCostBasis();
-		double marketValue = price * shares;
-		double newShares = origShares - shares;
-		double newAvgCost = (origCostBasis - marketValue) / newShares;
-		
-		Position updatedPosition = new Position(stockSymbol, newShares, newAvgCost);
-		portfolio.put(stockSymbol, updatedPosition);
-		this.updateCash(marketValue);
-	}
-	*/
-	
-	//  Do we still need these?  looks like we update all this in the tradeStock method above
 	
 	/**
 	 * updates the current total cash in the portfolio when 
@@ -262,6 +133,7 @@ public class Portfolio {
 	 * buys will subtract from the cash while sells will add to the cash
 	 * @param marketValue
 	 */
+	
 	public void updateCash(double marketValue) {
 		Position cash = portfolio.get("USDCASH");
 		double currCash = cash.getShares();
@@ -286,33 +158,8 @@ public class Portfolio {
 		}
 		this.printPort();
 	}
-	
-	
-	/**
-	 * Updates the porfolio to include the most recent trade
-	 * when an individual buys or sells
-	 * updates cash balance and shares and adds new position
-	 * if not already in the portfolio/deletes position if they
-	 * sell all their shares in a specific stock
-	 */
-	//public void updatePositions() {
-		//may or may not be used based on above methods
-		//need to update this code
-		//need to think about how to add positions when they don't exist
-		//as well as how to delete positions if the individual sells all
-		//Cash position needs to update every time as well
-	//}
-	
 
-	/**
-	 * main method for user interaction
-	 * @param args
-	 */
-	
-	//ideally this goes in a separate class, still toying with 
-	//ideas here and don't have a final product on what this 
-	//will look like in the separate class
-		
+//	main method for testing only, will be removed.
 	public static void main(String[] args) {
 		PositionFileIO posFile = new PositionFileIO();
 		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
