@@ -1,8 +1,6 @@
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 public class Position {
 
@@ -22,7 +20,7 @@ public class Position {
 	 * @param currAverageCost
 	 */
 	public Position(String currSymbol, double currShares, double currAverageCost) {
-		YahooQuote getPrice = new YahooQuote();
+		YahooQuote quote = new YahooQuote();
 		symbol = currSymbol.toUpperCase();
 		shares = currShares;
 		//USDCASH is the actual cash position, checking and setting cost to 1
@@ -42,7 +40,7 @@ public class Position {
 		}
 		else {
 			try {
-				lastPrice = getPrice.getLastPrice(symbol);
+				lastPrice = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -131,9 +129,9 @@ public class Position {
 				+ "\t"  + String.format("%10s",sharesOutput) 
 				+ "\t" + String.format("%10s",avgCostOutput) 
 				+ "\t"+ String.format("%10s",lastPriceOutput) 
-				+ "\t" + String.format("%10s", costBasisOutput) 
-				+ "\t" + String.format("%15s", currentValueOutput) 
-				+ "\t" + String.format("%15s",returnValueOutput));
+				+ "\t" + String.format("%15s", costBasisOutput) 
+				+ "\t" + String.format("%18s", currentValueOutput) 
+				+ "\t" + String.format("%10s",returnValueOutput));
 	}
 
 	/**
@@ -177,16 +175,15 @@ public class Position {
 		this.positionReturn = positionReturn;
 	}
 
-/*
-	public static void main(String[] args) {
-		Position test = new Position("AAPL", 1, 127.40);
-		//System.out.println(test.getLastPrice());
-		//System.out.println(test.getShares());
-		//System.out.println(test.getCostBasis());
-		//System.out.println(test.getCurrentValue());
-		//System.out.println(test.getPositionReturn());
-		
-		//System.out.println(test);
-	}
-*/	
+//	public static void main(String[] args) {
+//		Position test = new Position("AAPL", 1, 127.40);
+//		System.out.println(test);
+//		System.out.println(test.getShares());
+//		System.out.println(test.getCostBasis());
+//		System.out.println(test.getCurrentValue());
+//		System.out.println(test.getPositionReturn());
+//		
+//		System.out.println(test);
+//	}
+	
 }

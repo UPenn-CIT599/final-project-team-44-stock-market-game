@@ -33,24 +33,19 @@ public class Portfolio {
 	}
 	
 	/*
-	 * Prints your positions line by line for review in a formatted
-	 * output for easy reading by individual
+	 * Helper method. Prints your positions line by line for review in a formatted
+	 * output for easy reading by individual. This should never be called directly.
+	 * It should only be accessed via the updatePortfolio method as that will print the
+	 * portfolio with updated prices.
 	 */
 	public void printPort() {
 		System.out.println(String.format("%10s","SYMBOL") 
-				+ "\t" + String.format("%10s", "SHARES") 
-				+ "\t" + String.format("%10s", "AVG COST") 
-				+ "\t" + String.format("%10s", "LAST PRICE") 
-				+ "\t" + String.format("%10s","COST BASIS") 
-				+ "\t" + String.format("%15s", "CURR VALUE") 
-				+ "\t" + String.format("%15s", "RETURN (%)"));
-		/*System.out.println(String.format("%-10s","SYMBOL") 
-		+ "\t" + String.format("%-10s", "SHARES") 
-		+ "\t" + String.format("%-10s", "AVG COST") 
-		+ "\t" + String.format("%-10s", "LAST PRICE") 
-		+ "\t" + String.format("%-15s","COST BASIS") 
-		+ "\t" + String.format("%-15s", "CURR VALUE") 
-		+ "\t" + String.format("%-10s", "RETURN (%)"));*/
+		+ "\t" + String.format("%10s", "SHARES") 
+		+ "\t" + String.format("%10s", "AVG COST") 
+		+ "\t" + String.format("%10s", "LAST PRICE") 
+		+ "\t" + String.format("%15s","COST BASIS") 
+		+ "\t" + String.format("%18s", "CURR VALUE") 
+		+ "\t" + String.format("%10s", "RETURN (%)"));
 		for (String symbol : portfolio.keySet()) {
 			System.out.println(portfolio.get(symbol));
 		}
@@ -82,7 +77,7 @@ public class Portfolio {
 //	NOT WORKING	
 //	public boolean hasSufficientCash(String symbol, double shares) {
 //		try {
-//			double price = quote.getLastPrice(symbol);
+//			double price = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));;
 //			double cashToSpend = price * shares;
 //			double currCash = portfolio.get("USDCASH").getCurrentValue();
 //			if (currCash < cashToSpend) {
@@ -106,7 +101,7 @@ public class Portfolio {
 	public void buyStock(String symbol, double shares) {
 		try {
 			String stockSymbol = symbol.toUpperCase();
-			double price = quote.getLastPrice(stockSymbol);
+			double price = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));;
 			double marketValue = price * shares;
 			Position p = new Position(stockSymbol, shares, price);
 			portfolio.put(symbol, p);
@@ -137,7 +132,7 @@ public class Portfolio {
 			//initializes tradeAction to bought. Will be changed to sold later if shares < 0.
 			String tradeAction = "bought";
 			int absShares = (int) Math.abs(shares);
-			double price = quote.getLastPrice(stockSymbol);
+			double price = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));;
 			double netMoney = price * shares;
 			
 			//Liquidating a position
@@ -186,7 +181,7 @@ public class Portfolio {
 //	public void sellStock(String symbol, double shares) {
 //		try {
 //			String stockSymbol = symbol.toUpperCase();
-//			double price = quote.getLastPrice(stockSymbol);
+//			double price = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));;
 //			double netMoney = price * shares;
 //			
 //			if (shares == portfolio.get(stockSymbol).getShares()) {
