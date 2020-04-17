@@ -251,7 +251,7 @@ public class Trade {
 						fileName = s.next();
 						readPortfolio = file.readpositionCSV(fileName);
 						Portfolio portfolio = new Portfolio(readPortfolio);
-						portfolio.printPort();
+						portfolio.updatePortfolio();
 						
 						// make sure this makes sense after helper method is established
 						
@@ -324,7 +324,7 @@ public class Trade {
 // code broke here		
 		
 		System.out.println("You have exited the trading session.  Below is your current portfolio.");
-		portfolio.printPort();
+		portfolio.updatePortfolio();
 		try {
 			file.writePositionCSV(fileName, portfolio);
 		} catch (FileNotFoundException e) {
