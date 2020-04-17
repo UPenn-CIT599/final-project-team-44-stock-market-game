@@ -24,7 +24,7 @@ public class Position {
 	 * @param currAverageCost
 	 */
 	public Position(String currSymbol, double currShares, double currAverageCost) {
-		YahooQuote getPrice = new YahooQuote();
+		YahooQuote quote = new YahooQuote();
 		symbol = currSymbol.toUpperCase();
 		shares = currShares;
 		//USDCASH is the actual cash position, checking and setting cost to 1
@@ -44,7 +44,7 @@ public class Position {
 		}
 		else {
 			try {
-				lastPrice = getPrice.getLastPrice(symbol);
+				lastPrice = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -122,9 +122,6 @@ public class Position {
 	 */
 	public String toString() {
 		
-		
-
-		
 		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
 		String sharesOutput = numberFormat.format(getShares());
@@ -185,16 +182,15 @@ public class Position {
 		this.positionReturn = positionReturn;
 	}
 
-/*
-	public static void main(String[] args) {
-		Position test = new Position("AAPL", 1, 127.40);
-		//System.out.println(test.getLastPrice());
-		//System.out.println(test.getShares());
-		//System.out.println(test.getCostBasis());
-		//System.out.println(test.getCurrentValue());
-		//System.out.println(test.getPositionReturn());
-		
-		//System.out.println(test);
-	}
-*/	
+//	public static void main(String[] args) {
+//		Position test = new Position("AAPL", 1, 127.40);
+//		System.out.println(test);
+//		System.out.println(test.getShares());
+//		System.out.println(test.getCostBasis());
+//		System.out.println(test.getCurrentValue());
+//		System.out.println(test.getPositionReturn());
+//		
+//		System.out.println(test);
+//	}
+	
 }
