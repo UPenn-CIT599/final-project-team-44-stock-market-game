@@ -36,6 +36,7 @@ public class Trade {
 			System.out.println("   6. exit trading session");
 			optionSelection = optionScanner.nextInt();
 			switch (optionSelection) {
+// Chad handling				
 				case 1:
 					try {
 						// ask the user for a stock symbol and check to make sure it is valid
@@ -81,6 +82,7 @@ public class Trade {
 						stockSymbol = optionScanner.next();
 					}
 					break;
+// Chad handling				
 				case 2:
 					try {
 						// ask the user for a stock symbol and first check to make sure it's a valid symbol
@@ -89,7 +91,6 @@ public class Trade {
 						System.out.println("Please enter the stock symbol you would like to sell.");
 						stockSymbol = optionScanner.next();
 						quote.isValidSymbol(stockSymbol); 
-// do we need a checkPositions method in Portfolio class to make sure they have the stock?
 						System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
 						
 // need to check current portfolio for shares of the stock
@@ -127,6 +128,7 @@ public class Trade {
 						stockSymbol = optionScanner.next();
 					}
 					break;
+//Jarod handling				
 				case 3:
 					System.out.println("Please enter the symbol of the stock you would like a quote on.");
 					stockSymbol = optionScanner.next();
@@ -144,6 +146,7 @@ public class Trade {
 						stockSymbol = optionScanner.next();
 					}
 					break;
+// Chris Handling				
 				case 4:
 					System.out.println("How much would you like to deposit?");
 // need error handling here
@@ -154,6 +157,7 @@ public class Trade {
 					portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
 					portfolio.updatePortfolio();
 					break;
+// Chris Handling				
 				case 5:
 					System.out.println("How much would you like to withdraw?");
 					amount = optionScanner.nextDouble();
@@ -246,14 +250,15 @@ public class Trade {
 		// instance variable to store values 
 		PositionFileIO file = new PositionFileIO();
 		Scanner s = new Scanner(System.in);
-//error handling here for userSelection;  Chris to handle this
+// error handling here for userSelection;  
+// Chris to handle this
 		int userSelection = s.nextInt();
 		String fileName = null;
 		
 		
 			//need to make the portfolio here outside the 
 			switch (userSelection) {
-				case 1:
+				case 1:				
 					try {
 						System.out.println("Please enter your file path and/or name.");
 						fileName = s.next();
@@ -261,16 +266,16 @@ public class Trade {
 						Portfolio portfolio = new Portfolio(readPortfolio);
 						portfolio.updatePortfolio();
 						
-						// make sure this makes sense after helper method is established
-						
-// need code in here to make sure that it doesn't skip step or maybe in the error handling
-						
 						this.options(portfolio);
 						break;
 					} catch (FileNotFoundException e) {
+// need code in here to make sure that it doesn't skip step or maybe in the error handling
+// Jarod Handling
 						System.out.println("Could not find the file with the provided path and/or name.");
 						System.out.println("Please enter a valid path and/or file name.");
-					}
+//						if ()
+					} 
+		
 				case 2:
 					/**
 					 * option if the do not have a file to read from/initial portfolio
