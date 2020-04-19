@@ -27,7 +27,6 @@ public class Trade {
 		int optionSelection = 0;
 		
 		while (optionSelection < 6) {	
-			System.out.println();
 			System.out.println("What would you like to do next?  Please choose and enter a number from the following options");
 			System.out.println("   1. buy stock");
 			System.out.println("   2. sell stock");
@@ -47,12 +46,12 @@ public class Trade {
 						System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
 						
 // need to check current portfolio for cash position
-// need some help on this one
+// need some help on this one, portfolio.get("USDCASH").getShares.... then pass into the
+// Jarod to handle
 						System.out.println("You currently have " + "" + " available to trade.  How many shares would you like to buy?");
 						int shares = optionScanner.nextInt();
 						
-// code breaks here
-						
+// calculate net money and pass in where the shares are passed						
 // can probably add the throws exception to the method so we don't need the if statement
 						if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
 							//give the user the options to execute or cancel the trade
@@ -64,13 +63,15 @@ public class Trade {
 							switch (optionSelection) {
 								case 1:
 									portfolio.tradeStock(stockSymbol, shares);
-// do we have the trade price stored globally?
 									System.out.println("You bought " + shares + " of " + stockSymbol + " at " + "");
+									portfolio.updatePortfolio();
 									break;
 								case 2: 
 									break;
 							}
-						}
+						} 
+						
+						else System.out.println("You don't have enough cash to purchase " + shares + "of " + stockSymbol);
 						System.out.println();
 					} catch (IllegalStateException e) {
 						System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
@@ -111,6 +112,7 @@ public class Trade {
 									portfolio.tradeStock(stockSymbol, -shares);
 //do we have the trade price stored globally?
 									System.out.println("You sold " + shares + " of " + stockSymbol + " at " + "");
+									portfolio.updatePortfolio();
 									break;
 								case 2: 
 									break;
@@ -150,6 +152,7 @@ public class Trade {
 // code breaks here					
 					
 					portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
+					portfolio.updatePortfolio();
 					break;
 				case 5:
 					System.out.println("How much would you like to withdraw?");
@@ -160,6 +163,7 @@ public class Trade {
 					// again, should we have the throws exception in the method?
 					if(portfolio.hasSufficientShares("USDCASH", amount) == true) {
 						portfolio.tradeStock("USDCASH", -amount);
+						portfolio.updatePortfolio();
 					} else System.out.println("You do not have enough cash to withdraw.  Please choose choose and enter a number from the following:");
 					System.out.println("   1. sell stock");
 					System.out.println("   2. cancel transaction");
@@ -233,6 +237,8 @@ public class Trade {
 		System.out.println("   IV. You cannot buy or sell partial shares.  The minimum buy or sell must be 1.");
 		System.out.println("   V. In order to buy or sell a stock you will need to know its symbol.  This can be found via any online search engine.");
 		System.out.println();
+		quote.indicesData();
+		System.out.println();
 		System.out.println("To start your trading session, please choose and enter a number from the following:");
 		System.out.println("   1. Upload an existing portfolio from an outside file");
 		System.out.println("   2. Continue without an existing portfolio");
@@ -240,10 +246,12 @@ public class Trade {
 		// instance variable to store values 
 		PositionFileIO file = new PositionFileIO();
 		Scanner s = new Scanner(System.in);
+//error handling here for userSelection;  Chris to handle this
 		int userSelection = s.nextInt();
 		String fileName = null;
 		
-		while(userSelection < 6) {
+		
+			//need to make the portfolio here outside the 
 			switch (userSelection) {
 				case 1:
 					try {
@@ -301,9 +309,11 @@ public class Trade {
 							System.out.println("Please enter the symbol of the stock you would like a quote on.");
 							stockSymbol = s.next();
 							try {
+// need the while loop to not leave the exception handling erroneously
+// Chad to look at exception throwing/creating method to handle
 								quote.isValidSymbol(stockSymbol);
-								System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
-								
+								quote.returnStockQuote(stockSymbol);
+
 								// after getting the first quote it enters into the options helper method
 								this.options(portfolio);
 							} catch (IllegalStateException e1) {
@@ -317,12 +327,19 @@ public class Trade {
 					}
 					// make sure this makes sense after helper method is established
 					this.options(portfolio);
-					break;
+					System.out.println("You have exited the trading session.  Below is your current portfolio.");
+					portfolio.updatePortfolio();
+					try {
+						file.writePositionCSV(fileName, portfolio);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					s.close();
 			}
-		}
 	
 // code broke here		
-		
+		this.options(portfolio);
 		System.out.println("You have exited the trading session.  Below is your current portfolio.");
 		portfolio.updatePortfolio();
 		try {
@@ -331,6 +348,7 @@ public class Trade {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		s.close();
+		s.close();	
+		
 	}
 }
