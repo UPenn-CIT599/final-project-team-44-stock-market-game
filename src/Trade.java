@@ -13,8 +13,8 @@ public class Trade {
 	private String stockSymbol = null;
 	private double amount = 0.0;
 	private HashMap<String, Position> readPortfolio = new HashMap<String, Position>();
-	private Portfolio portfolio = new Portfolio(readPortfolio);  // may need to take this out and put in the loop
 	YahooQuote quote = new YahooQuote();
+	int userSelection = 0;
 	
 	/**
 	 * helper method to be able to loop through the switch statement
@@ -24,9 +24,9 @@ public class Trade {
 	 */
 	private void options(Portfolio portfolio) {
 		Scanner optionScanner = new Scanner(System.in);
-		int optionSelection = 0;
 		
-		while (optionSelection < 6) {	
+		
+		while (userSelection < 6) {	
 			System.out.println("What would you like to do next?  Please choose and enter a number from the following options");
 			System.out.println("   1. buy stock");
 			System.out.println("   2. sell stock");
@@ -34,15 +34,15 @@ public class Trade {
 			System.out.println("   4. deposit cash");
 			System.out.println("   5. withdraw cash");
 			System.out.println("   6. exit trading session");
-			optionSelection = optionScanner.nextInt();
-			switch (optionSelection) {
+			userSelection = optionScanner.nextInt();
+			switch (userSelection) {
 // Chad handling				
 				case 1:
 					try {
 						// ask the user for a stock symbol and check to make sure it is valid
 						// then gives the user a quote with the available cash in their portfolio
 						System.out.println("Please enter the stock symbol you would like to buy.");
-						stockSymbol = optionScanner.next();
+						stockSymbol = optionScanner.next().toUpperCase();
 						quote.isValidSymbol(stockSymbol); 
 						System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
 						
@@ -59,12 +59,11 @@ public class Trade {
 							System.out.println("Please choose and enter a number from the following:");
 							System.out.println("   1. execute trade");
 							System.out.println("   2. cancel trade");
-							optionSelection = optionScanner.nextInt();
+							userSelection = optionScanner.nextInt();
 							// divide the response into two separate cases
-							switch (optionSelection) {
+							switch (userSelection) {
 								case 1:
 									portfolio.tradeStock(stockSymbol, shares);
-									System.out.println("You bought " + shares + " of " + stockSymbol + " at " + "");
 									portfolio.updatePortfolio();
 									break;
 								case 2: 
@@ -106,9 +105,9 @@ public class Trade {
 							System.out.println("Please choose and enter a number from the following:");
 							System.out.println("   1. execute trade");
 							System.out.println("   2. cancel trade");
-							optionSelection = optionScanner.nextInt();
+							userSelection = optionScanner.nextInt();
 							//divide the response into two separate cases
-							switch (optionSelection) {
+							switch (userSelection) {
 								case 1:
 									portfolio.tradeStock(stockSymbol, -shares);
 //do we have the trade price stored globally?
@@ -131,7 +130,7 @@ public class Trade {
 //Jarod handling				
 				case 3:
 					System.out.println("Please enter the symbol of the stock you would like a quote on.");
-					stockSymbol = optionScanner.next();
+					stockSymbol = optionScanner.next().toUpperCase();
 					try {
 						quote.isValidSymbol(stockSymbol);
 						//System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
@@ -171,8 +170,8 @@ public class Trade {
 					} else System.out.println("You do not have enough cash to withdraw.  Please choose choose and enter a number from the following:");
 					System.out.println("   1. sell stock");
 					System.out.println("   2. cancel transaction");
-					optionSelection = optionScanner.nextInt();
-					switch (optionSelection) {
+					userSelection = optionScanner.nextInt();
+					switch (userSelection) {
 						case 1:
 							try {
 								// ask the user for a stock symbol and first check to make sure it's a valid symbol
@@ -197,9 +196,9 @@ public class Trade {
 									System.out.println("Please choose and enter a number from the following:");
 									System.out.println("   1. execute trade");
 									System.out.println("   2. cancel trade");
-									optionSelection = optionScanner.nextInt();
+									userSelection = optionScanner.nextInt();
 									//divide the response into two separate cases
-									switch (optionSelection) {
+									switch (userSelection) {
 										case 1:
 											portfolio.tradeStock(stockSymbol, -shares);
 											//do we have the trade price stored globally?
@@ -252,9 +251,9 @@ public class Trade {
 		Scanner s = new Scanner(System.in);
 // error handling here for userSelection;  
 // Chris to handle this
-		int userSelection = s.nextInt();
+		userSelection = s.nextInt();
 		String fileName = null;
-		
+		Portfolio portfolio = null;
 		
 			//need to make the portfolio here outside the 
 			switch (userSelection) {
@@ -263,7 +262,7 @@ public class Trade {
 						System.out.println("Please enter your file path and/or name.");
 						fileName = s.next();
 						readPortfolio = file.readpositionCSV(fileName);
-						Portfolio portfolio = new Portfolio(readPortfolio);
+						portfolio = new Portfolio(readPortfolio);
 						portfolio.updatePortfolio();
 						
 						this.options(portfolio);
@@ -278,8 +277,7 @@ public class Trade {
 		
 				case 2:
 					/**
-					 * option if the do not have a file to read from/initial portfolio
-					 * they would like to trade from
+					 * option if individual does not have a file to read from/initial portfolio
 					 * splits into another two options asking if the individual
 					 * wants to first deposit cash or get a stock quote before entering into
 					 * the options helper method 
