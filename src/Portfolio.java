@@ -87,7 +87,7 @@ public class Portfolio {
 			//initializes tradeAction to bought. Will be changed to sold later if shares < 0.
 			String tradeAction = "bought";
 			int absShares = (int) Math.abs(shares);
-			double price = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));;
+			double price = Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart"));;
 			double netMoney = price * shares;
 			
 			//Liquidating a position
@@ -107,7 +107,7 @@ public class Portfolio {
 				}
 				//putting the position in to the portfolio on a new buy or 
 				//updating the position on add or trim
-				portfolio.put(symbol, p);
+				portfolio.put(stockSymbol, p);
 			}
 
 			//update cash balance in the portfolio
