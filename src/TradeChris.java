@@ -1,13 +1,15 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import java.util.*;
+
 /**
  * This class houses the user interaction and the loops
  * that make the game run
  * @author jarod
  *
  */
-public class Trade {
+public class TradeChris {
 	
 	// instance variables for Trade class
 	private String stockSymbol = null;
@@ -34,7 +36,33 @@ public class Trade {
 			System.out.println("   4. deposit cash");
 			System.out.println("   5. withdraw cash");
 			System.out.println("   6. exit trading session");
-			userSelection = optionScanner.nextInt();
+			boolean validEntry = false;
+			while (!validEntry) {
+				try {
+					userSelection = optionScanner.nextInt();
+					int numSelections = 6;
+					if (checksUserSelections(numSelections)) {validEntry = true;}
+					else {
+						System.out.println("Incorrect entry. Please choose and enter a number from the following:");
+						System.out.println("   1. buy stock");
+						System.out.println("   2. sell stock");
+						System.out.println("   3. get a stock quote");
+						System.out.println("   4. deposit cash");
+						System.out.println("   5. withdraw cash");
+						System.out.println("   6. exit trading session");
+					}
+				} catch (InputMismatchException e) {
+					System.out.println("Incorrect entry. Please choose and enter a number from the following:");
+					System.out.println("   1. buy stock");
+					System.out.println("   2. sell stock");
+					System.out.println("   3. get a stock quote");
+					System.out.println("   4. deposit cash");
+					System.out.println("   5. withdraw cash");
+					System.out.println("   6. exit trading session");
+					optionScanner.nextLine();
+					continue;
+				}
+			}
 			switch (userSelection) {
 // Chad handling				
 				case 1:
@@ -227,7 +255,15 @@ public class Trade {
 		optionScanner.close();
 	}
 	
-	
+	/**
+	 * checks if the selection is valid
+	 */
+	private boolean checksUserSelections(int numSelections) {
+		if ((userSelection > 0) && (userSelection <= numSelections)) {
+			return true;
+		}
+		else return false;
+	}
 	
 	/**
 	 * deposits initial cash if there is no existing portfolio
@@ -261,20 +297,38 @@ public class Trade {
 		System.out.println("To start your trading session, please choose and enter a number from the following:");
 		System.out.println("   1. Upload an existing portfolio from an outside file");
 		System.out.println("   2. Continue without an existing portfolio");
-		
+		boolean validEntry = false;
+		Scanner s = new Scanner(System.in);
+		while (!validEntry) {
+			try {
+				userSelection = s.nextInt();
+				int numSelections = 2;
+				if (checksUserSelections(numSelections)) {validEntry = true;}
+				else {
+					System.out.println("Incorrect entry. Please choose and enter a number from teh following:");
+					System.out.println("   1. Upload an existing portfolio from an outside file");
+					System.out.println("   2. Continue without an existing portfolio");
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Incorrect entry. Please choose and enter a number from teh following:");
+				System.out.println("   1. Upload an existing portfolio from an outside file");
+				System.out.println("   2. Continue without an existing portfolio");
+				s.nextLine();
+				continue;
+			}
+		}
 		// instance variable to store values 
 		PositionFileIO file = new PositionFileIO();
-		Scanner s = new Scanner(System.in);
+		
 // error handling here for userSelection;  
 // Chris to handle this
-		userSelection = s.nextInt();
 		String fileName = null;
 		Portfolio portfolio = null;
-		
 			//need to make the portfolio here outside the 
 			switch (userSelection) {
 				case 1:				
 					try {
+						
 						System.out.println("Please enter your file path and/or name.");
 						fileName = s.next();
 						readPortfolio = file.readpositionCSV(fileName);
