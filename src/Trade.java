@@ -14,7 +14,7 @@ public class Trade {
 	private double amount = 0.0;
 	private HashMap<String, Position> readPortfolio = new HashMap<String, Position>();
 	YahooQuote quote = new YahooQuote();
-	int userSelection = 0;
+	private int userSelection = 0;
 	
 	/**
 	 * helper method to be able to loop through the switch statement
@@ -127,7 +127,8 @@ public class Trade {
 						stockSymbol = optionScanner.next();
 					}
 					break;
-//Jarod handling				
+				// option 3 from the selection
+				// allows individual to get a single stock quote and re-enter the option method
 				case 3:
 					System.out.println("Please enter the symbol of the stock you would like a quote on.");
 					stockSymbol = optionScanner.next().toUpperCase();
@@ -163,7 +164,7 @@ public class Trade {
 					
 // code breaks here					
 					
-					// again, should we have the throws exception in the method?
+// again, should we have the throws exception in the method?
 					if(portfolio.hasSufficientShares("USDCASH", amount) == true) {
 						portfolio.tradeStock("USDCASH", -amount);
 						portfolio.updatePortfolio();
@@ -288,20 +289,31 @@ public class Trade {
 					// need exception handling here
 					userSelection = s.nextInt();
 					switch (userSelection) {
+						// this option allows the individual to put cash into an empty portfolio
+						// so that they can transact as they wish through the program
 						case 1:
-							/**
-							 * this option deposits cash so we enter into a buy order
-							 * where the individual is buying 1 share of cash per dollar valued at
-							 * 1 dollar per share, then enters the options helper method
-							 */
-							System.out.println("How much would you like to deposit?");
-							// need error handling here
-							amount = s.nextDouble();
-					
-// Code Breaks here							
+							// first asks the user to enter in a filename and stores the value 
+							// so that we can properly print it out later
+							System.out.println("What would you like to name your output file?  Please do not include file extension. It will be written as a CSV file");
+							fileName = s.next() + ".csv";
 							
-							portfolio.updateCash(amount); //updates the cash in the new portfolio to what the user input
-							// after updating the cash it enters into the helper options method
+							System.out.println("How much would you like to deposit?");
+// need error handling here
+							amount = s.nextDouble();
+							// creates a new cash position and portfolio where all the
+							// individual initially has is cash so that we can pass it
+							// through the rest of the program
+							Position cash = new Position("USDCASH", amount, 1);
+							HashMap<String, Position> newPortfolio = new HashMap<String, Position>();
+							newPortfolio.put("USDCASH", cash);
+							// pass the cash into the portfolio
+							portfolio = new Portfolio(newPortfolio);
+							// skip a line for easy readability
+							System.out.println();
+							portfolio.updatePortfolio();
+							// skip a line for easy readability
+							System.out.println();
+							
 							this.options(portfolio);
 							break;
 						case 2:
@@ -328,21 +340,9 @@ public class Trade {
 							}
 							break;
 					}
-					// make sure this makes sense after helper method is established
-					this.options(portfolio);
-					System.out.println("You have exited the trading session.  Below is your current portfolio.");
-					portfolio.updatePortfolio();
-					try {
-						file.writePositionCSV(fileName, portfolio);
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					s.close();
 			}
-	
-// code broke here		
-		this.options(portfolio);
+		// after individual enters 6 they see their portfolio and exit the program
+		// the new portfolio is written over the old one in the same file they gave earlier
 		System.out.println("You have exited the trading session.  Below is your current portfolio.");
 		portfolio.updatePortfolio();
 		try {
