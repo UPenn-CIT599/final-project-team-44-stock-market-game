@@ -65,10 +65,15 @@ public class Portfolio {
 	 */
 	
 	public boolean hasSufficientShares(String symbol, double shares) {
-		double currentShares = portfolio.get(symbol).getShares();
-		if (currentShares >= shares) {
-			return true;
-		} else return false;
+		if (!portfolio.containsKey(symbol.toUpperCase())) {
+			return false;
+		}
+		else {
+			double currentShares = portfolio.get(symbol).getShares();
+			if (currentShares >= shares) {
+				return true;
+			} else return false;
+		}
 	}
 
 	/**
@@ -102,7 +107,12 @@ public class Portfolio {
 				//add or trim an existing position
 				else {
 					double newShares = portfolio.get(stockSymbol).getShares() + shares;
-					double newAvgCost = (portfolio.get(stockSymbol).getCostBasis() + netMoney) / newShares;
+					//calculate average cost on sell (avg cost does not change) vs. buys (need
+					//to recalculate the new average cost).
+					double newAvgCost = portfolio.get(stockSymbol).getAverageCost();
+					if (shares > 0) {
+						newAvgCost = (portfolio.get(stockSymbol).getCostBasis() + netMoney) / newShares;	
+					}
 					p = new Position(stockSymbol, newShares, newAvgCost);
 				}
 				//putting the position in to the portfolio on a new buy or 
