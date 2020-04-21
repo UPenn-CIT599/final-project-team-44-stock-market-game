@@ -228,6 +228,19 @@ public class Trade {
 	}
 	
 	/**
+	 * deposits initial cash if there is no existing portfolio
+	 * @param amount
+	 */
+	public Portfolio initialCashDeposit(double amount) {
+		Position cash = new Position("USDCASH", amount, 1);
+		HashMap<String, Position> newPortfolio = new HashMap<String, Position>();
+		newPortfolio.put("USDCASH", cash);
+		Portfolio portfolio = new Portfolio(newPortfolio);
+		
+		return portfolio;
+	}
+	
+	/**
 	 * single method to run the trading session for the game
 	 */
 	public void runTradingSession() {
@@ -300,20 +313,13 @@ public class Trade {
 							System.out.println("How much would you like to deposit?");
 // need error handling here
 							amount = s.nextDouble();
-							// creates a new cash position and portfolio where all the
-							// individual initially has is cash so that we can pass it
-							// through the rest of the program
-							Position cash = new Position("USDCASH", amount, 1);
-							HashMap<String, Position> newPortfolio = new HashMap<String, Position>();
-							newPortfolio.put("USDCASH", cash);
-							// pass the cash into the portfolio
-							portfolio = new Portfolio(newPortfolio);
+							// pass the cash deposit into the portfolio
+							portfolio = this.initialCashDeposit(amount);
 							// skip a line for easy readability
 							System.out.println();
 							portfolio.updatePortfolio();
 							// skip a line for easy readability
 							System.out.println();
-							
 							this.options(portfolio);
 							break;
 						case 2:
