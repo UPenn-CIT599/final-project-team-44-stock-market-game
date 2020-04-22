@@ -1,2 +1,9 @@
 bin/
 .classpath
+src/Main.java
+src/Portfolio.java
+src/PortfolioTest.java
+src/Position.java
+src/Trade.java
+src/PositionTest.java
+src/YahooQuote.java
