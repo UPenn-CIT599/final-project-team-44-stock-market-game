@@ -13,10 +13,19 @@ public class ChadTrade {
 	private String stockSymbol = null;
 	private double amount = 0.0;
 	private HashMap<String, Position> readPortfolio = new HashMap<String, Position>();
-	private Portfolio portfolio = new Portfolio(readPortfolio);  // may need to take this out and put in the loop
 	YahooQuote quote = new YahooQuote();
+	private int userSelection = 0;
+	private String fileName = null;
 	
-	public Portfolio optionsOneAndTwo(Portfolio port, int selectedOption, Scanner s) {
+	/**
+	 * Local helper method to complete buys and sells when the individual selects either option
+	 * 1 or 2 from the option method
+	 * @param port
+	 * @param selectedOption
+	 * @param s
+	 * @return
+	 */
+	private Portfolio optionsOneAndTwo(Portfolio port, int selectedOption, Scanner s) {
 		String tradeAction = "buy";
 		if (selectedOption == 2) {
 			tradeAction = "sell";
@@ -83,7 +92,7 @@ public class ChadTrade {
 					}
 				}
 				else {
-					//set defaulta for a sell
+					//set default for a sell
 					String sharesOrCash = "shares";
 					String action = "sell";
 					String currShares = "";
@@ -107,14 +116,11 @@ public class ChadTrade {
 				}
 
 		} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			//	e.printStackTrace();
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			//	e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			//	e.printStackTrace();
 			}
 		}
 		//if the user exited the getValidSymbol method by typing "EXIT" as their symbol.
@@ -126,10 +132,11 @@ public class ChadTrade {
 	
 	/**
 	 * Does error handling and user interaction for when an invalid or nonexistent s is input by the user.
+	 * locally used helper method
 	 * @return String with either a valid symbol or "EXIT" which will exit the loop for the option that we are passing
 	 * back to.
 	 */
-	public String getValidSymbol(Scanner s, String symbol) {
+	private String getValidSymbol(Scanner s, String symbol) {
 		//enters while loop with validSymbol = false. Once the user enters a valid symbol, we will \
 		//exit the loop and return the valid symbol to the caller.
 		boolean validSymbol = false;
@@ -147,17 +154,18 @@ public class ChadTrade {
 			} catch (IOException e) {
 				System.out.println("IOException. The symbol you input does not exist. "
 						+ "Please input a valid symbol to continue or type \"exit\" to return to the options menu.");
-				e.printStackTrace();
+				// e.printStackTrace();
 				symbol = s.next().toUpperCase();
 			} catch (IllegalStateException e) {
 				System.out.println("IllegalStateException. The symbol you input does not trade. "
 						+ "Please input a valid symbol to continue or type \"exit\" to return to the options menu.");
-				e.printStackTrace();
+				// e.printStackTrace();
 				symbol = s.next().toUpperCase();
 			}
 		}
 		return symbol;
 	}
+
 
 	public int getValidInt(Scanner s) {
 		int shares = -1;
@@ -176,20 +184,22 @@ public class ChadTrade {
 				System.out.println("InputMismatchException. Please input a valid positive integer.");
 //				shares = s.nextInt();
 				s.nextLine();
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		return shares;
 	}
 	
+// Make this double and all inputs for amounts and selections doubles to make easier?	
 	/**
 	 * Handles errors and invalid input for parameter selection.
+	 * only used locally as a helper method
 	 * @param s
 	 * @param lowOption
 	 * @param highOption
 	 * @return
 	 */
-	public int getValidInt(Scanner s, int lowOption, int highOption) {
+	private int getValidInt(Scanner s, int lowOption, int highOption) {
 		int option = 0;
 		while (option < lowOption || option > highOption) {
 			try {
@@ -202,49 +212,24 @@ public class ChadTrade {
 			} catch (InputMismatchException e) {
 				System.out.println("InputMismatchException. Please input an integer " 
 						+ "between " + lowOption + " and " + highOption + ".");
-				e.printStackTrace();
+				// e.printStackTrace();
 				s.nextLine();
 			}  
 		}
 		return option;
 	}
 	
-	public static void main(String[] args) {
-		ChadTrade tst = new ChadTrade();
-//		PositionFileIO file = new PositionFileIO();
-		Scanner s = new Scanner(System.in);
-//		String fileName = null;
-//		//System.out.println("Please enter your file path and/or name.");
-//		fileName = "DummyStockPortfolio.csv";
-//		try {
-//			tst.readPortfolio = file.readpositionCSV(fileName);
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		Portfolio portfolio = new Portfolio(tst.readPortfolio);
-//		portfolio.updatePortfolio();
-////		tst.getValidSymbol();
-//		tst.optionsOneAndTwo(portfolio, 1, s);
-		int optionSelection = 0;
-		System.out.println("put in an option.");
-		optionSelection = tst.getValidInt(s, 1, 6);
-		System.out.println(optionSelection);
-		//System.out.println("you exited, and now we are continuing back to options");
-//		s.close();
-				
-	}
-	
 	/**
-	 * helper method to be able to loop through the switch statement
+	 * Local helper method to be able to loop through the switch statement
 	 * and get through all options in an efficient manner
 	 * provides the individual with 6 options: buy stock, sell stock, get a stock quote,
 	 * deposit cash, withdraw cash, or exit the trading session
 	 */
 	private void options(Portfolio portfolio) {
 		Scanner optionScanner = new Scanner(System.in);
-		int optionSelection = 0;
-		while (optionSelection < 6) {	
+		
+		
+		while (userSelection < 6) {	
 			System.out.println("What would you like to do next?  Please choose and enter a number from the following options");
 			System.out.println("   1. buy stock");
 			System.out.println("   2. sell stock");
@@ -252,21 +237,21 @@ public class ChadTrade {
 			System.out.println("   4. deposit cash");
 			System.out.println("   5. withdraw cash");
 			System.out.println("   6. exit trading session");
-//			optionSelection = optionScanner.nextInt();
-			optionSelection = this.getValidInt(optionScanner, 1, 6);
-			switch (optionSelection) {
-// Chad handling				
-				case 1:					
+			userSelection = this.getValidInt(optionScanner, 1, 6);
+			switch (userSelection) {
+// Updated				
+				case 1:
 					portfolio = this.optionsOneAndTwo(portfolio, 1, optionScanner);
 					break;
-// Chad handling				
+// Updated				
 				case 2:
 					portfolio = this.optionsOneAndTwo(portfolio, 2, optionScanner);
 					break;
-//Jarod handling				
+				// option 3 from the selection
+				// allows individual to get a single stock quote and re-enter the option method
 				case 3:
 					System.out.println("Please enter the symbol of the stock you would like a quote on.");
-					stockSymbol = optionScanner.next();
+					stockSymbol = optionScanner.next().toUpperCase();
 					try {
 						quote.isValidSymbol(stockSymbol);
 						//System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
@@ -286,80 +271,57 @@ public class ChadTrade {
 					System.out.println("How much would you like to deposit?");
 // need error handling here
 					amount = optionScanner.nextDouble();
-					
-// code breaks here					
-					
-					portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
-					portfolio.updatePortfolio();
+					if(portfolio == null) {
+						// ask individual for a file name so we can write the file out
+						System.out.println("What would you like to name your output file?  Please do not include file extension. It will be written as a CSV file");
+						fileName = optionScanner.next() + ".csv";
+						portfolio = this.initialCashDeposit(amount);
+						portfolio.updatePortfolio();
+						this.options(portfolio);
+					} else {
+						portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
+						portfolio.updatePortfolio();
+					}
 					break;
 // Chris Handling				
 				case 5:
 					System.out.println("How much would you like to withdraw?");
 					amount = optionScanner.nextDouble();
-					
-// code breaks here					
-					
-					// again, should we have the throws exception in the method?
 					if(portfolio.hasSufficientShares("USDCASH", amount) == true) {
-						portfolio.tradeStock("USDCASH", -amount);
+						portfolio.updateCash(-amount);
 						portfolio.updatePortfolio();
-					} else System.out.println("You do not have enough cash to withdraw.  Please choose choose and enter a number from the following:");
-					System.out.println("   1. sell stock");
-					System.out.println("   2. cancel transaction");
-					optionSelection = optionScanner.nextInt();
-					switch (optionSelection) {
-						case 1:
-							try {
-								// ask the user for a stock symbol and first check to make sure it's a valid symbol
-								// then check to make sure they possess it in their portfolio
-								// then gives the user a quote with the available shares in their portfolio
-								System.out.println("Please enter the stock symbol you would like to sell.");
-								stockSymbol = optionScanner.next();
-								quote.isValidSymbol(stockSymbol); 
-								// do we need a checkPositions method in Portfolio class to make sure they have the stock?
-								System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
-								
-								// need to check current portfolio for shares of the stock
-								// need some help on this one
-								System.out.println("You currently have " + "" + " available to trade");
-								
-								// ask the user how many shares they would like to sell and check to make sure they have enough
-								System.out.println("How many shares would you like to sell?");
-								int shares = optionScanner.nextInt();
-								// can probably add the throws exception to the method so we don't need the if statement
-								if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
-									//give the user the options to execute or cancel the trade
-									System.out.println("Please choose and enter a number from the following:");
-									System.out.println("   1. execute trade");
-									System.out.println("   2. cancel trade");
-									optionSelection = optionScanner.nextInt();
-									//divide the response into two separate cases
-									switch (optionSelection) {
-										case 1:
-											portfolio.tradeStock(stockSymbol, -shares);
-											//do we have the trade price stored globally?
-											System.out.println("You sold " + shares + " of " + stockSymbol + " at " + "");
-											break;
-										case 2: 
-											break;
-									}
-								}
-								System.out.println();
-							} catch (IllegalStateException e) {
-								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-								stockSymbol = optionScanner.next();
-							} catch (IOException e) {
-								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-								stockSymbol = optionScanner.next();
-							}
-							break;
-						case 2:
-							break;
+					} else {
+						System.out.println("You do not have enough cash to withdraw.  Please choose choose and enter a number from the following:");
+						System.out.println("   1. sell stock");
+						System.out.println("   2. cancel transaction");
+						userSelection = this.getValidInt(optionScanner, 1, 2);
+						
+						switch (userSelection) {
+							case 1:
+								// maybe 
+								portfolio = this.optionsOneAndTwo(portfolio, 1, optionScanner);
+								break;
+							case 2:
+								break;
+						}
 					}
 					break;
 			}
 		}
 		optionScanner.close();
+	}
+	
+	/**
+	 * creates an initial cash portfolio if the individual doesn't have a file to read in
+	 * @param amount
+	 */
+	private Portfolio initialCashDeposit(double amount) {
+		Position cash = new Position("USDCASH", amount, 1);
+		HashMap<String, Position> newPortfolio = new HashMap<String, Position>();
+		newPortfolio.put("USDCASH", cash);
+		Portfolio portfolio = new Portfolio(newPortfolio);
+		
+		return portfolio;
 	}
 	
 	/**
@@ -383,22 +345,19 @@ public class ChadTrade {
 		System.out.println("   2. Continue without an existing portfolio");
 		
 		// instance variable to store values 
-		PositionFileIO file = new PositionFileIO();
+		ChadPositionFileIO file = new ChadPositionFileIO();
 		Scanner s = new Scanner(System.in);
-// error handling here for userSelection;  
-// Chris to handle this
-		int userSelection = this.getValidInt(s, 1, 2);
-		String fileName = null;
+// updated		
+		userSelection = this.getValidInt(s, 1, 2);
+		Portfolio portfolio = null;
 		
-		
-			//need to make the portfolio here outside the 
 			switch (userSelection) {
 				case 1:				
 					try {
-						//System.out.println("Please enter your file path and/or name.");
-						fileName = "DummyStockPortfolio.csv";
+						System.out.println("Please enter your file path and/or name.");
+						fileName = s.next();
 						readPortfolio = file.readpositionCSV(fileName);
-						Portfolio portfolio = new Portfolio(readPortfolio);
+						portfolio = new Portfolio(readPortfolio);
 						portfolio.updatePortfolio();
 						
 						this.options(portfolio);
@@ -413,8 +372,7 @@ public class ChadTrade {
 		
 				case 2:
 					/**
-					 * option if the do not have a file to read from/initial portfolio
-					 * they would like to trade from
+					 * option if individual does not have a file to read from/initial portfolio;
 					 * splits into another two options asking if the individual
 					 * wants to first deposit cash or get a stock quote before entering into
 					 * the options helper method 
@@ -425,20 +383,25 @@ public class ChadTrade {
 					// need exception handling here
 					userSelection = s.nextInt();
 					switch (userSelection) {
+						// this option allows the individual to put cash into an empty portfolio
+						// so that they can transact as they wish through the program
 						case 1:
-							/**
-							 * this option deposits cash so we enter into a buy order
-							 * where the individual is buying 1 share of cash per dollar valued at
-							 * 1 dollar per share, then enters the options helper method
-							 */
-							System.out.println("How much would you like to deposit?");
-							// need error handling here
-							amount = s.nextDouble();
-					
-// Code Breaks here							
+							// first asks the user to enter in a filename and stores the value 
+							// so that we can properly print it out later
+							System.out.println("What would you like to name your output file?  Please do not include file extension. It will be written as a CSV file");
+							fileName = s.next() + ".csv";
 							
-							portfolio.updateCash(amount); //updates the cash in the new portfolio to what the user input
-							// after updating the cash it enters into the helper options method
+							System.out.println("How much would you like to deposit?");
+// need error handling here; possibly make getValidInt an interface?
+// create similar method to getValidInt
+							amount = s.nextDouble();
+							// pass the cash deposit into the portfolio
+							portfolio = this.initialCashDeposit(amount);
+							// skip a line for easy readability
+							System.out.println();
+							portfolio.updatePortfolio();
+							// skip a line for easy readability
+							System.out.println();
 							this.options(portfolio);
 							break;
 						case 2:
@@ -454,7 +417,8 @@ public class ChadTrade {
 								quote.isValidSymbol(stockSymbol);
 								quote.returnStockQuote(stockSymbol);
 
-								// after getting the first quote it enters into the options helper method
+// loop back into the option 2 to get quote or deposit
+// Jarod Handling
 								this.options(portfolio);
 							} catch (IllegalStateException e1) {
 								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
@@ -465,21 +429,9 @@ public class ChadTrade {
 							}
 							break;
 					}
-					// make sure this makes sense after helper method is established
-					this.options(portfolio);
-					System.out.println("You have exited the trading session.  Below is your current portfolio.");
-					portfolio.updatePortfolio();
-					try {
-						file.writePositionCSV(fileName, portfolio);
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					s.close();
 			}
-	
-// code broke here		
-		this.options(portfolio);
+		// after individual enters 6 they see their portfolio and exit the program
+		// the new portfolio is written over the old one in the same file they gave earlier
 		System.out.println("You have exited the trading session.  Below is your current portfolio.");
 		portfolio.updatePortfolio();
 		try {
