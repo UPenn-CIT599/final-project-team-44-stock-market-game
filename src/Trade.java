@@ -15,6 +15,7 @@ public class Trade {
 	private HashMap<String, Position> readPortfolio = new HashMap<String, Position>();
 	YahooQuote quote = new YahooQuote();
 	private int userSelection = 0;
+	private String fileName = null;
 	
 	/**
 	 * Local helper method to complete buys and sells when the individual selects either option
@@ -115,14 +116,11 @@ public class Trade {
 				}
 
 		} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			//	e.printStackTrace();
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			//	e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			//	e.printStackTrace();
 			}
 		}
 		//if the user exited the getValidSymbol method by typing "EXIT" as their symbol.
@@ -156,19 +154,19 @@ public class Trade {
 			} catch (IOException e) {
 				System.out.println("IOException. The symbol you input does not exist. "
 						+ "Please input a valid symbol to continue or type \"exit\" to return to the options menu.");
-				e.printStackTrace();
+				// e.printStackTrace();
 				symbol = s.next().toUpperCase();
 			} catch (IllegalStateException e) {
 				System.out.println("IllegalStateException. The symbol you input does not trade. "
 						+ "Please input a valid symbol to continue or type \"exit\" to return to the options menu.");
-				e.printStackTrace();
+				// e.printStackTrace();
 				symbol = s.next().toUpperCase();
 			}
 		}
 		return symbol;
 	}
 
-// get rid of?
+
 	public int getValidInt(Scanner s) {
 		int shares = -1;
 		boolean validShares = false;
@@ -186,7 +184,7 @@ public class Trade {
 				System.out.println("InputMismatchException. Please input a valid positive integer.");
 //				shares = s.nextInt();
 				s.nextLine();
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		return shares;
@@ -214,7 +212,7 @@ public class Trade {
 			} catch (InputMismatchException e) {
 				System.out.println("InputMismatchException. Please input an integer " 
 						+ "between " + lowOption + " and " + highOption + ".");
-				e.printStackTrace();
+				// e.printStackTrace();
 				s.nextLine();
 			}  
 		}
@@ -239,7 +237,7 @@ public class Trade {
 			System.out.println("   4. deposit cash");
 			System.out.println("   5. withdraw cash");
 			System.out.println("   6. exit trading session");
-			userSelection = optionScanner.nextInt();
+			userSelection = this.getValidInt(optionScanner, 1, 6);
 			switch (userSelection) {
 // Updated				
 				case 1:
@@ -268,12 +266,15 @@ public class Trade {
 						stockSymbol = optionScanner.next();
 					}
 					break;
-// Updated				
+// Chris Handling				
 				case 4:
 					System.out.println("How much would you like to deposit?");
 // need error handling here
 					amount = optionScanner.nextDouble();
 					if(portfolio == null) {
+						// ask individual for a file name so we can write the file out
+						System.out.println("What would you like to name your output file?  Please do not include file extension. It will be written as a CSV file");
+						fileName = optionScanner.next() + ".csv";
 						portfolio = this.initialCashDeposit(amount);
 						portfolio.updatePortfolio();
 						this.options(portfolio);
@@ -282,7 +283,7 @@ public class Trade {
 						portfolio.updatePortfolio();
 					}
 					break;
-// Updated				
+// Chris Handling				
 				case 5:
 					System.out.println("How much would you like to withdraw?");
 					amount = optionScanner.nextDouble();
@@ -293,10 +294,11 @@ public class Trade {
 						System.out.println("You do not have enough cash to withdraw.  Please choose choose and enter a number from the following:");
 						System.out.println("   1. sell stock");
 						System.out.println("   2. cancel transaction");
-						userSelection = optionScanner.nextInt();
+						userSelection = this.getValidInt(optionScanner, 1, 2);
 						
 						switch (userSelection) {
 							case 1:
+								// maybe 
 								portfolio = this.optionsOneAndTwo(portfolio, 1, optionScanner);
 								break;
 							case 2:
@@ -309,13 +311,11 @@ public class Trade {
 		optionScanner.close();
 	}
 	
-// move to Porfolio?	
-	
 	/**
 	 * creates an initial cash portfolio if the individual doesn't have a file to read in
 	 * @param amount
 	 */
-	public Portfolio initialCashDeposit(double amount) {
+	private Portfolio initialCashDeposit(double amount) {
 		Position cash = new Position("USDCASH", amount, 1);
 		HashMap<String, Position> newPortfolio = new HashMap<String, Position>();
 		newPortfolio.put("USDCASH", cash);
@@ -349,7 +349,6 @@ public class Trade {
 		Scanner s = new Scanner(System.in);
 // updated		
 		userSelection = this.getValidInt(s, 1, 2);
-		String fileName = null;
 		Portfolio portfolio = null;
 		
 			switch (userSelection) {
@@ -394,6 +393,7 @@ public class Trade {
 							
 							System.out.println("How much would you like to deposit?");
 // need error handling here; possibly make getValidInt an interface?
+// create similar method to getValidInt
 							amount = s.nextDouble();
 							// pass the cash deposit into the portfolio
 							portfolio = this.initialCashDeposit(amount);
@@ -417,7 +417,8 @@ public class Trade {
 								quote.isValidSymbol(stockSymbol);
 								quote.returnStockQuote(stockSymbol);
 
-								// after getting the first quote it enters into the options helper method
+// loop back into the option 2 to get quote or deposit
+// Jarod Handling
 								this.options(portfolio);
 							} catch (IllegalStateException e1) {
 								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
