@@ -181,10 +181,7 @@ public class TradeChris {
 					amount = optionScanner.nextDouble();
 					
 // code breaks here					
-					
-					portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
-					portfolio.updatePortfolio();
-					break;
+					if (cashTransaction(amount, portfolio)) {break;}
 // Chris Handling				
 				case 5:
 					System.out.println("How much would you like to withdraw?");
@@ -193,63 +190,63 @@ public class TradeChris {
 // code breaks here					
 					
 // again, should we have the throws exception in the method?
-					if(portfolio.hasSufficientShares("USDCASH", amount) == true) {
-						portfolio.tradeStock("USDCASH", -amount);
-						portfolio.updatePortfolio();
-					} else System.out.println("You do not have enough cash to withdraw.  Please choose choose and enter a number from the following:");
-					System.out.println("   1. sell stock");
-					System.out.println("   2. cancel transaction");
-					userSelection = optionScanner.nextInt();
-					switch (userSelection) {
-						case 1:
-							try {
-								// ask the user for a stock symbol and first check to make sure it's a valid symbol
-								// then check to make sure they possess it in their portfolio
-								// then gives the user a quote with the available shares in their portfolio
-								System.out.println("Please enter the stock symbol you would like to sell.");
-								stockSymbol = optionScanner.next();
-								quote.isValidSymbol(stockSymbol); 
-								// do we need a checkPositions method in Portfolio class to make sure they have the stock?
-								System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
+					if (!cashTransaction(amount, portfolio)) {
+										
+						System.out.println("You do not have enough cash to withdraw.  Please choose and enter a number from the following:");
+						System.out.println("   1. sell stock");
+						System.out.println("   2. cancel transaction");
+						userSelection = optionScanner.nextInt();
+						switch (userSelection) {
+							case 1:
+								try {
+									// ask the user for a stock symbol and first check to make sure it's a valid symbol
+									// then check to make sure they possess it in their portfolio
+									// then gives the user a quote with the available shares in their portfolio
+									System.out.println("Please enter the stock symbol you would like to sell.");
+									stockSymbol = optionScanner.next();
+									quote.isValidSymbol(stockSymbol); 
+									// do we need a checkPositions method in Portfolio class to make sure they have the stock?
+									System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
 								
-								// need to check current portfolio for shares of the stock
-								// need some help on this one
-								System.out.println("You currently have " + "" + " available to trade");
+									// need to check current portfolio for shares of the stock
+									// need some help on this one
+									System.out.println("You currently have " + "" + " available to trade");
 								
-								// ask the user how many shares they would like to sell and check to make sure they have enough
-								System.out.println("How many shares would you like to sell?");
-								int shares = optionScanner.nextInt();
-								// can probably add the throws exception to the method so we don't need the if statement
-								if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
-									//give the user the options to execute or cancel the trade
-									System.out.println("Please choose and enter a number from the following:");
-									System.out.println("   1. execute trade");
-									System.out.println("   2. cancel trade");
-									userSelection = optionScanner.nextInt();
-									//divide the response into two separate cases
-									switch (userSelection) {
-										case 1:
-											portfolio.tradeStock(stockSymbol, -shares);
-											//do we have the trade price stored globally?
-											System.out.println("You sold " + shares + " of " + stockSymbol + " at " + "");
-											break;
-										case 2: 
-											break;
+									// ask the user how many shares they would like to sell and check to make sure they have enough
+									System.out.println("How many shares would you like to sell?");
+									int shares = optionScanner.nextInt();
+									// can probably add the throws exception to the method so we don't need the if statement
+									if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
+										//give the user the options to execute or cancel the trade
+										System.out.println("Please choose and enter a number from the following:");
+										System.out.println("   1. execute trade");
+										System.out.println("   2. cancel trade");
+										userSelection = optionScanner.nextInt();
+										//divide the response into two separate cases
+										switch (userSelection) {
+											case 1:
+												portfolio.tradeStock(stockSymbol, -shares);
+												//do we have the trade price stored globally?
+												System.out.println("You sold " + shares + " of " + stockSymbol + " at " + "");
+												break;
+											case 2: 
+												break;
+										}
 									}
+									System.out.println();
+								} catch (IllegalStateException e) {
+									System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
+									stockSymbol = optionScanner.next();
+								} catch (IOException e) {
+									System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
+									stockSymbol = optionScanner.next();
 								}
-								System.out.println();
-							} catch (IllegalStateException e) {
-								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-								stockSymbol = optionScanner.next();
-							} catch (IOException e) {
-								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-								stockSymbol = optionScanner.next();
-							}
-							break;
-						case 2:
-							break;
-					}
+								break;
+							case 2:
+								break;
+						}
 					break;
+					}
 			}
 		}
 		optionScanner.close();
@@ -276,6 +273,22 @@ public class TradeChris {
 		Portfolio portfolio = new Portfolio(newPortfolio);
 		
 		return portfolio;
+	}
+	
+	private boolean cashTransaction(double amount, Portfolio portfolio) {
+		if (amount < 0) {
+			if(portfolio.hasSufficientShares("USDCASH", amount) == true) {
+				portfolio.tradeStock("USDCASH", -amount);
+				portfolio.updatePortfolio();
+				return true;
+			}
+			else return false;
+		}
+		else {
+			portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
+			portfolio.updatePortfolio();
+			return true;
+		}
 	}
 	
 	/**
