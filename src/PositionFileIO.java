@@ -2,11 +2,19 @@ import java.io.File;
 import java.util.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.nio.charset.spi.CharsetProvider;
+
 
 
 /**
@@ -42,7 +50,7 @@ public class PositionFileIO {
 			while (fileReader.hasNextLine()) {
 				rowNum++;
 				String line = fileReader.nextLine();
-				String[] lineComponents = line.split(",");
+				String[] lineComponents = line.split("\t");
 				//check for empty cells
 				for (int i=0; i < numColumns; i++) {
 					String s = lineComponents[i];
@@ -61,21 +69,21 @@ public class PositionFileIO {
 							goodRow = false;
 							System.out.println("Wrong Stock Symbol in row " + rowNum + ". This row was ignored.");
 						}
+				
 					
 				if (goodRow) {
 					
 					String symbol = lineComponents[0];
 					double shares = 0;
 					double avgCost = 1.0;			
-				
 					try {
-						shares = Double.parseDouble(lineComponents[1]);
+						shares = Double.valueOf(lineComponents[1]);
 					} catch (NumberFormatException e) {
 						goodRow = false;
 						System.out.println("Shares is entered in the wrong format in row " + rowNum + ". This row was ignored.");
 					}
 					try {
-						avgCost = Double.parseDouble(lineComponents[2]);
+						avgCost = Double.valueOf(lineComponents[2]);
 					} catch (NumberFormatException e) {
 						goodRow = false;
 						System.out.println("Average Cost is entered in the wrong format in row " + rowNum + ". This row was ignored.");
@@ -98,10 +106,11 @@ public class PositionFileIO {
 	 *@param portfolio: contains the portfolio information that will be written to the file
 	 */
 	public void writePositionCSV (String fileName, Portfolio port) throws FileNotFoundException {
+				
 		File out = new File(fileName);
 		PrintWriter pw = new PrintWriter(out);
-			pw.println("Symbol" + "," + "Shares" + "," + "AverageCost" + "," + "LastPrice" + "," + "CostBasis" + "," + "CurrentValue" + "," + "Return");
-			//pw.flush();
+		String outputHeader = "Symbol" + "\t" + String.format("%15s","Shares") + "\t" + String.format("%15s", "AverageCost") + "\t" + String.format("%15s", "LastPrice") + "\t" + String.format("%15s", "CostBasis") + "\t" + String.format("%15s", "CurrentValue") + "\t" + String.format("%15s", "Return");
+		pw.println(outputHeader);
 		//the following code tries to convert to dollar format where needed
 			for (String symbol : port.portfolio.keySet()) {
 				//if we ever wanted this--will probably delete when finalized
@@ -122,10 +131,15 @@ public class PositionFileIO {
 				String returnValueOutput = Double.toString(port.portfolio.get(symbol).getPositionReturn());
 		        //"\"" + currency + "\" ,"
 				// Prints the position to the file. Need to format it in a way that we can print commas to a cell in a .csv file.
-				pw.println(symbolOutput + "," + "\"" + sharesOutput + "\"," + "\"" + avgCostOutput + "\"," + "\"" + lastPriceOutput + "\"," + "\"" + costBasisOutput + "\"," + "\"" + currentValueOutput + "\"," + returnValueOutput);
+				String outputRow = symbolOutput + "\t" + String.format("%15s", sharesOutput) + "\t" + String.format("%15s",avgCostOutput) + "\t" + String.format("%15s", lastPriceOutput) + "\t" + String.format("%15s", costBasisOutput) + "\t" + String.format("%15s", currentValueOutput) + "\t" + String.format("%15s", returnValueOutput);
+				pw.println(outputRow);
 				pw.flush();
-			}	
+				
+				
+			}
+			pw.close();
 			
+
 		
 		}
 	

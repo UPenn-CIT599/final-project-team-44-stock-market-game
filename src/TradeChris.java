@@ -181,7 +181,7 @@ public class TradeChris {
 					amount = optionScanner.nextDouble();
 					
 // code breaks here					
-					if (cashTransaction(amount, portfolio)) {break;}
+					if (cashTransaction(userSelection, amount, portfolio)) {break;}
 // Chris Handling				
 				case 5:
 					System.out.println("How much would you like to withdraw?");
@@ -190,7 +190,7 @@ public class TradeChris {
 // code breaks here					
 					
 // again, should we have the throws exception in the method?
-					if (!cashTransaction(amount, portfolio)) {
+					if (!cashTransaction(userSelection, amount, portfolio)) {
 										
 						System.out.println("You do not have enough cash to withdraw.  Please choose and enter a number from the following:");
 						System.out.println("   1. sell stock");
@@ -275,8 +275,8 @@ public class TradeChris {
 		return portfolio;
 	}
 	
-	private boolean cashTransaction(double amount, Portfolio portfolio) {
-		if (amount < 0) {
+	private boolean cashTransaction(int userSelection, double amount, Portfolio portfolio) {
+		if (userSelection==5) {
 			if(portfolio.hasSufficientShares("USDCASH", amount) == true) {
 				portfolio.tradeStock("USDCASH", -amount);
 				portfolio.updatePortfolio();
@@ -430,3 +430,4 @@ public class TradeChris {
 		
 	}
 }
+
