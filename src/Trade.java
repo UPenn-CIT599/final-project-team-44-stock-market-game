@@ -17,7 +17,212 @@ public class Trade {
 	private int userSelection = 0;
 	
 	/**
-	 * helper method to be able to loop through the switch statement
+	 * Local helper method to complete buys and sells when the individual selects either option
+	 * 1 or 2 from the option method
+	 * @param port
+	 * @param selectedOption
+	 * @param s
+	 * @return
+	 */
+	private Portfolio optionsOneAndTwo(Portfolio port, int selectedOption, Scanner s) {
+		String tradeAction = "buy";
+		if (selectedOption == 2) {
+			tradeAction = "sell";
+		}
+		System.out.println("Please enter the stock symbol you would like to " + tradeAction + ".");
+		String stockSymbol = s.next().toUpperCase();
+		stockSymbol = this.getValidSymbol(s, stockSymbol);
+		
+		double availableShares = 0;
+		String availSharesString = "";
+		
+		//if trying to sell shares of an un-owned position, break out of the method and go back
+		//to caller.
+		if (selectedOption == 2 && !port.portfolio.containsKey(stockSymbol)) {
+			System.out.println("You do not own " + stockSymbol + " and cannot sell any shares.");
+			return port;
+		}
+		if (selectedOption == 2 && port.portfolio.containsKey(stockSymbol)) {
+			availableShares = port.portfolio.get(stockSymbol).getShares();
+			availSharesString = String.format("%,.0f", availableShares) + " shares ";
+		}
+		else {
+			availableShares = port.portfolio.get("USDCASH").getShares();
+			availSharesString = "$" + String.format("%,.2f", availableShares);
+		}
+		if (!stockSymbol.equals("EXIT")) {
+			double price;
+			try {
+				price = Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart"));
+				System.out.println(stockSymbol + " is currently trading at $" + String.format("%,.2f", price));
+				System.out.println("You currently have " + availSharesString 
+				+ " available to " + tradeAction + ".  How many shares would you like to " + tradeAction + "?");
+				
+				int shares = getValidInt(s);
+
+				boolean sufficientShares = false;
+				
+				//if selling, confirm we have enough shares to sell.
+				if (selectedOption == 2) {
+					sufficientShares = port.hasSufficientShares(stockSymbol, shares);
+					shares = -shares;
+				}
+				//if buying, confirm there is enough cash to purchase the shares.
+				else {
+					double netMoney = shares * price;
+					sufficientShares = port.hasSufficientShares("USDCASH", netMoney);
+				}
+				
+				//continue with trade options if we have enough shares/cash.
+				if (sufficientShares) {
+					//give the user the options to execute or cancel the trade
+					System.out.println("Please choose and enter a number from the following:");
+					System.out.println("   1. execute trade");
+					System.out.println("   2. cancel trade");
+					int optionSelection = s.nextInt();
+					// divide the response into two separate cases
+					switch (optionSelection) {
+					case 1:
+						port.tradeStock(stockSymbol, shares);
+						port.updatePortfolio();
+						break;
+					case 2:
+						break;
+					}
+				}
+				else {
+					//set default for a sell
+					String sharesOrCash = "shares";
+					String action = "sell";
+					String currShares = "";
+					double currentShares = 0;
+					if (port.portfolio.containsKey(stockSymbol) && selectedOption == 2) {
+						currentShares = port.portfolio.get(stockSymbol).getShares();	
+						currShares = String.format("%,.0f", currentShares);
+					}
+					
+					//if buying, flip the verbiage to cash.
+					if (selectedOption == 1) {
+						sharesOrCash = "cash";
+						action = "buy";
+						currentShares = port.portfolio.get("USDCASH").getShares();
+						currShares = "$" + String.format("%,.2f", currentShares);
+					}
+					//sharesOrCash is passed in to the string.
+					System.out.println("You do not have sufficient " + sharesOrCash + " to " + action + " " + 
+							Math.abs(shares) + " shares of " + stockSymbol + ". You only have " 
+							+ currShares  + " " + sharesOrCash + ".");
+				}
+
+		} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//if the user exited the getValidSymbol method by typing "EXIT" as their symbol.
+		else {
+			System.out.println("You exited the stock selection without providing a valid symbol.");
+		}
+		return port;
+	}		
+	
+	/**
+	 * Does error handling and user interaction for when an invalid or nonexistent s is input by the user.
+	 * locally used helper method
+	 * @return String with either a valid symbol or "EXIT" which will exit the loop for the option that we are passing
+	 * back to.
+	 */
+	private String getValidSymbol(Scanner s, String symbol) {
+		//enters while loop with validSymbol = false. Once the user enters a valid symbol, we will \
+		//exit the loop and return the valid symbol to the caller.
+		boolean validSymbol = false;
+		while (!validSymbol && !symbol.toUpperCase().equals("EXIT")) {
+			try {
+				validSymbol = quote.isValidSymbol(symbol);
+				if (!validSymbol) {
+					symbol = s.next().toUpperCase();
+					System.out.println(symbol);
+				}
+				//if the user typed in exit, it allows them to exit this loop and return to the options menu.
+				if (symbol.toUpperCase().equals("EXIT")) {
+					return "EXIT";
+				}
+			} catch (IOException e) {
+				System.out.println("IOException. The symbol you input does not exist. "
+						+ "Please input a valid symbol to continue or type \"exit\" to return to the options menu.");
+				e.printStackTrace();
+				symbol = s.next().toUpperCase();
+			} catch (IllegalStateException e) {
+				System.out.println("IllegalStateException. The symbol you input does not trade. "
+						+ "Please input a valid symbol to continue or type \"exit\" to return to the options menu.");
+				e.printStackTrace();
+				symbol = s.next().toUpperCase();
+			}
+		}
+		return symbol;
+	}
+
+// get rid of?
+	public int getValidInt(Scanner s) {
+		int shares = -1;
+		boolean validShares = false;
+		while (!validShares || shares <= 0) {
+			try {
+				shares = s.nextInt();
+				if (shares <= 0) {
+					System.out.println("Invalid shares. Please input an integer greater than 0.");
+				}
+				else {
+					validShares = true;
+				}
+			} catch (InputMismatchException e) {
+				validShares = false;
+				System.out.println("InputMismatchException. Please input a valid positive integer.");
+//				shares = s.nextInt();
+				s.nextLine();
+				e.printStackTrace();
+			}
+		}
+		return shares;
+	}
+	
+// Make this double and all inputs for amounts and selections doubles to make easier?	
+	/**
+	 * Handles errors and invalid input for parameter selection.
+	 * only used locally as a helper method
+	 * @param s
+	 * @param lowOption
+	 * @param highOption
+	 * @return
+	 */
+	private int getValidInt(Scanner s, int lowOption, int highOption) {
+		int option = 0;
+		while (option < lowOption || option > highOption) {
+			try {
+				option = s.nextInt();
+				if (option < lowOption || option > highOption) {
+					System.out.println("Invalid option selection. Please input an integer "
+							+ "between " + lowOption + " and " + highOption + ".");
+					s.nextLine();					
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("InputMismatchException. Please input an integer " 
+						+ "between " + lowOption + " and " + highOption + ".");
+				e.printStackTrace();
+				s.nextLine();
+			}  
+		}
+		return option;
+	}
+	
+	/**
+	 * Local helper method to be able to loop through the switch statement
 	 * and get through all options in an efficient manner
 	 * provides the individual with 6 options: buy stock, sell stock, get a stock quote,
 	 * deposit cash, withdraw cash, or exit the trading session
@@ -36,96 +241,13 @@ public class Trade {
 			System.out.println("   6. exit trading session");
 			userSelection = optionScanner.nextInt();
 			switch (userSelection) {
-// Chad handling				
+// Updated				
 				case 1:
-					try {
-						// ask the user for a stock symbol and check to make sure it is valid
-						// then gives the user a quote with the available cash in their portfolio
-						System.out.println("Please enter the stock symbol you would like to buy.");
-						stockSymbol = optionScanner.next().toUpperCase();
-						quote.isValidSymbol(stockSymbol); 
-						System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
-						
-// need to check current portfolio for cash position
-// need some help on this one, portfolio.get("USDCASH").getShares.... then pass into the
-// Jarod to handle
-						System.out.println("You currently have " + "" + " available to trade.  How many shares would you like to buy?");
-						int shares = optionScanner.nextInt();
-						
-// calculate net money and pass in where the shares are passed						
-// can probably add the throws exception to the method so we don't need the if statement
-						if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
-							//give the user the options to execute or cancel the trade
-							System.out.println("Please choose and enter a number from the following:");
-							System.out.println("   1. execute trade");
-							System.out.println("   2. cancel trade");
-							userSelection = optionScanner.nextInt();
-							// divide the response into two separate cases
-							switch (userSelection) {
-								case 1:
-									portfolio.tradeStock(stockSymbol, shares);
-									portfolio.updatePortfolio();
-									break;
-								case 2: 
-									break;
-							}
-						} 
-						
-						else System.out.println("You don't have enough cash to purchase " + shares + "of " + stockSymbol);
-						System.out.println();
-					} catch (IllegalStateException e) {
-						System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-						stockSymbol = optionScanner.next();
-					} catch (IOException e) {
-						System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-						stockSymbol = optionScanner.next();
-					}
+					portfolio = this.optionsOneAndTwo(portfolio, 1, optionScanner);
 					break;
-// Chad handling				
+// Updated				
 				case 2:
-					try {
-						// ask the user for a stock symbol and first check to make sure it's a valid symbol
-						// then check to make sure they possess it in their portfolio
-						// then gives the user a quote with the available shares in their portfolio
-						System.out.println("Please enter the stock symbol you would like to sell.");
-						stockSymbol = optionScanner.next();
-						quote.isValidSymbol(stockSymbol); 
-						System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
-						
-// need to check current portfolio for shares of the stock
-// need some help on this one
-						System.out.println("You currently have " + "" + " available to trade.  How many shares would you like to sell?");
-						int shares = optionScanner.nextInt();
-						// can probably add the throws exception to the method so we don't need the if statement
-						
-// code breaks here						
-						
-						if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
-							//give the user the options to execute or cancel the trade
-							System.out.println("Please choose and enter a number from the following:");
-							System.out.println("   1. execute trade");
-							System.out.println("   2. cancel trade");
-							userSelection = optionScanner.nextInt();
-							//divide the response into two separate cases
-							switch (userSelection) {
-								case 1:
-									portfolio.tradeStock(stockSymbol, -shares);
-//do we have the trade price stored globally?
-									System.out.println("You sold " + shares + " of " + stockSymbol + " at " + "");
-									portfolio.updatePortfolio();
-									break;
-								case 2: 
-									break;
-							}
-						}
-						System.out.println();
-					} catch (IllegalStateException e) {
-						System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-						stockSymbol = optionScanner.next();
-					} catch (IOException e) {
-						System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-						stockSymbol = optionScanner.next();
-					}
+					portfolio = this.optionsOneAndTwo(portfolio, 2, optionScanner);
 					break;
 				// option 3 from the selection
 				// allows individual to get a single stock quote and re-enter the option method
@@ -146,80 +268,40 @@ public class Trade {
 						stockSymbol = optionScanner.next();
 					}
 					break;
-// Chris Handling				
+// Updated				
 				case 4:
 					System.out.println("How much would you like to deposit?");
 // need error handling here
 					amount = optionScanner.nextDouble();
-					
-// code breaks here					
-					
-					portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
-					portfolio.updatePortfolio();
+					if(portfolio == null) {
+						portfolio = this.initialCashDeposit(amount);
+						portfolio.updatePortfolio();
+						this.options(portfolio);
+					} else {
+						portfolio.updateCash(amount); // updates the cash in the new portfolio to what the user input
+						portfolio.updatePortfolio();
+					}
 					break;
-// Chris Handling				
+// Updated				
 				case 5:
 					System.out.println("How much would you like to withdraw?");
 					amount = optionScanner.nextDouble();
-					
-// code breaks here					
-					
-// again, should we have the throws exception in the method?
 					if(portfolio.hasSufficientShares("USDCASH", amount) == true) {
-						portfolio.tradeStock("USDCASH", -amount);
+						portfolio.updateCash(-amount);
 						portfolio.updatePortfolio();
-					} else System.out.println("You do not have enough cash to withdraw.  Please choose choose and enter a number from the following:");
-					System.out.println("   1. sell stock");
-					System.out.println("   2. cancel transaction");
-					userSelection = optionScanner.nextInt();
-					switch (userSelection) {
-						case 1:
-							try {
-								// ask the user for a stock symbol and first check to make sure it's a valid symbol
-								// then check to make sure they possess it in their portfolio
-								// then gives the user a quote with the available shares in their portfolio
-								System.out.println("Please enter the stock symbol you would like to sell.");
-								stockSymbol = optionScanner.next();
-								quote.isValidSymbol(stockSymbol); 
-								// do we need a checkPositions method in Portfolio class to make sure they have the stock?
-								System.out.println(stockSymbol + " is currently trading at $" + Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart")));
-								
-								// need to check current portfolio for shares of the stock
-								// need some help on this one
-								System.out.println("You currently have " + "" + " available to trade");
-								
-								// ask the user how many shares they would like to sell and check to make sure they have enough
-								System.out.println("How many shares would you like to sell?");
-								int shares = optionScanner.nextInt();
-								// can probably add the throws exception to the method so we don't need the if statement
-								if (portfolio.hasSufficientShares("USDCASH", shares) == true) {
-									//give the user the options to execute or cancel the trade
-									System.out.println("Please choose and enter a number from the following:");
-									System.out.println("   1. execute trade");
-									System.out.println("   2. cancel trade");
-									userSelection = optionScanner.nextInt();
-									//divide the response into two separate cases
-									switch (userSelection) {
-										case 1:
-											portfolio.tradeStock(stockSymbol, -shares);
-											//do we have the trade price stored globally?
-											System.out.println("You sold " + shares + " of " + stockSymbol + " at " + "");
-											break;
-										case 2: 
-											break;
-									}
-								}
-								System.out.println();
-							} catch (IllegalStateException e) {
-								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-								stockSymbol = optionScanner.next();
-							} catch (IOException e) {
-								System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-								stockSymbol = optionScanner.next();
-							}
-							break;
-						case 2:
-							break;
+					} else {
+						System.out.println("You do not have enough cash to withdraw.  Please choose choose and enter a number from the following:");
+						System.out.println("   1. sell stock");
+						System.out.println("   2. cancel transaction");
+						userSelection = optionScanner.nextInt();
+						
+						switch (userSelection) {
+							case 1:
+								portfolio = this.optionsOneAndTwo(portfolio, 1, optionScanner);
+								break;
+							case 2:
+								break;
+						}
 					}
 					break;
 			}
@@ -227,10 +309,10 @@ public class Trade {
 		optionScanner.close();
 	}
 	
-	
+// move to Porfolio?	
 	
 	/**
-	 * deposits initial cash if there is no existing portfolio
+	 * creates an initial cash portfolio if the individual doesn't have a file to read in
 	 * @param amount
 	 */
 	public Portfolio initialCashDeposit(double amount) {
@@ -265,13 +347,11 @@ public class Trade {
 		// instance variable to store values 
 		PositionFileIO file = new PositionFileIO();
 		Scanner s = new Scanner(System.in);
-// error handling here for userSelection;  
-// Chris to handle this
-		userSelection = s.nextInt();
+// updated		
+		userSelection = this.getValidInt(s, 1, 2);
 		String fileName = null;
 		Portfolio portfolio = null;
 		
-			//need to make the portfolio here outside the 
 			switch (userSelection) {
 				case 1:				
 					try {
@@ -293,7 +373,7 @@ public class Trade {
 		
 				case 2:
 					/**
-					 * option if individual does not have a file to read from/initial portfolio
+					 * option if individual does not have a file to read from/initial portfolio;
 					 * splits into another two options asking if the individual
 					 * wants to first deposit cash or get a stock quote before entering into
 					 * the options helper method 
@@ -313,7 +393,7 @@ public class Trade {
 							fileName = s.next() + ".csv";
 							
 							System.out.println("How much would you like to deposit?");
-// need error handling here
+// need error handling here; possibly make getValidInt an interface?
 							amount = s.nextDouble();
 							// pass the cash deposit into the portfolio
 							portfolio = this.initialCashDeposit(amount);
