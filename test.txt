@@ -1,4 +1,4 @@
-Symbol	         Shares	    AverageCost	      LastPrice	      CostBasis	   CurrentValue	         Return
-AAPL	         1000.0	         120.73	         274.09	       120730.0	       274090.0	127.02725089041662
-USDCASH	          554.0	            1.0	            1.0	          554.0	          554.0	            0.0
-GE	          100.0	           6.46	           6.46	          646.0	          646.0	            0.0
+Symbol	    Shares	AverageCost	 LastPrice	         CostBasis	      CurrentValue	    Return
+AAPL	    1000.0	    120.73	   274.145	          120730.0	          274145.0	127.07280709020128
+USDCASH	     654.0	       1.0	       1.0	             654.0	             654.0	       0.0
+GE	     100.0	      6.46	     6.465	             646.0	             646.5	0.07739938080495445

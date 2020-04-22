@@ -2,18 +2,8 @@ import java.io.File;
 import java.util.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.text.NumberFormat;
-import java.util.Locale;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.nio.charset.spi.CharsetProvider;
+
 
 
 
@@ -109,7 +99,7 @@ public class PositionFileIO {
 				
 		File out = new File(fileName);
 		PrintWriter pw = new PrintWriter(out);
-		String outputHeader = "Symbol" + "\t" + String.format("%15s","Shares") + "\t" + String.format("%15s", "AverageCost") + "\t" + String.format("%15s", "LastPrice") + "\t" + String.format("%15s", "CostBasis") + "\t" + String.format("%15s", "CurrentValue") + "\t" + String.format("%15s", "Return");
+		String outputHeader = "Symbol" + "\t" + String.format("%10s","Shares") + "\t" + String.format("%10s", "AverageCost") + "\t" + String.format("%10s", "LastPrice") + "\t" + String.format("%18s", "CostBasis") + "\t" + String.format("%18s", "CurrentValue") + "\t" + String.format("%10s", "Return");
 		pw.println(outputHeader);
 		//the following code tries to convert to dollar format where needed
 			for (String symbol : port.portfolio.keySet()) {
@@ -131,7 +121,7 @@ public class PositionFileIO {
 				String returnValueOutput = Double.toString(port.portfolio.get(symbol).getPositionReturn());
 		        //"\"" + currency + "\" ,"
 				// Prints the position to the file. Need to format it in a way that we can print commas to a cell in a .csv file.
-				String outputRow = symbolOutput + "\t" + String.format("%15s", sharesOutput) + "\t" + String.format("%15s",avgCostOutput) + "\t" + String.format("%15s", lastPriceOutput) + "\t" + String.format("%15s", costBasisOutput) + "\t" + String.format("%15s", currentValueOutput) + "\t" + String.format("%15s", returnValueOutput);
+				String outputRow = symbolOutput + "\t" + String.format("%10s", sharesOutput) + "\t" + String.format("%10s",avgCostOutput) + "\t" + String.format("%10s", lastPriceOutput) + "\t" + String.format("%18s", costBasisOutput) + "\t" + String.format("%18s", currentValueOutput) + "\t" + String.format("%10s", returnValueOutput);
 				pw.println(outputRow);
 				pw.flush();
 				
