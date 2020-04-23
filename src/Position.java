@@ -33,7 +33,9 @@ public class Position {
 		}
 		
 		//Last price is grabbed from the YahooQuote class to the url endpoint based on the position's symbol.
-		//The last price grabbed is used to calculate current value and position return.
+		//The last price grabbed is used to calculate current value and position return. The catch cannot be accessed
+		//via running the program as we run getValidSymbol before any of this can be called. thus, the program cannot natively
+		//access and through the IOException being caught in line 46.
 		
 		if (symbol.equals("USDCASH")) {
 			lastPrice = 1.0;
@@ -42,8 +44,8 @@ public class Position {
 			try {
 				lastPrice = Double.parseDouble(quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Could not get the stock price. The stock does not exist or does not trade.");
+//				e.printStackTrace();
 			}
 		}
 		
@@ -112,6 +114,7 @@ public class Position {
 		return positionReturn;
 	}
 
+	@Override
 	/**
 	 * helper method to format the position object 
 	 * when printing to the console
@@ -124,7 +127,7 @@ public class Position {
         String lastPriceOutput = dollarFormat.format(getLastPrice());
         String costBasisOutput = dollarFormat.format(getCostBasis());
         String currentValueOutput = dollarFormat.format(getCurrentValue());
-        String returnValueOutput = String.format("%.2f", getPositionReturn());
+        String returnValueOutput = String.format("%,.2f", getPositionReturn());
 		return (String.format("%10s",symbol) 
 				+ "\t"  + String.format("%10s",sharesOutput) 
 				+ "\t" + String.format("%10s",avgCostOutput) 
@@ -135,7 +138,7 @@ public class Position {
 	}
 
 	/**
-	 * sets the number of shares for a stock from the position object
+	 * sets the number of shares for a position. Used to update cash.
 	 * @param d
 	 */
 	public void setShares(double d) {
@@ -143,16 +146,7 @@ public class Position {
 	}
 
 	/**
-	 * sets the average cost of a single share of a particular stock
-	 * from the position object
-	 * @param averageCost
-	 */
-	public void setAverageCost(double averageCost) {
-		this.averageCost = averageCost;
-	}
-
-	/**
-	 * sets the cost basis of a particular stock from the position object
+	 * sets the cost basis for a position. Used to update cash.
 	 * @param costBasis
 	 */
 	public void setCostBasis(double costBasis) {
@@ -160,30 +154,11 @@ public class Position {
 	}
 
 	/**
-	 * sets the current value of a stock from the position object
+	 * sets the current value of a positoin. Used to update cash.
 	 * @param currentValue
 	 */
 	public void setCurrentValue(double currentValue) {
 		this.currentValue = currentValue;
-	}
-
-	/**
-	 * sets the return of a stock from the position object
-	 * @param positionReturn
-	 */
-	public void setPositionReturn(double positionReturn) {
-		this.positionReturn = positionReturn;
-	}
-
-	public static void main(String[] args) {
-		Position test = new Position("AAPL", 1, 127.40);
-		System.out.println(test);
-//		System.out.println(test.getShares());
-//		System.out.println(test.getCostBasis());
-//		System.out.println(test.getCurrentValue());
-//		System.out.println(test.getPositionReturn());
-//		
-//		System.out.println(test);
 	}
 	
 }

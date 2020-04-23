@@ -1,21 +1,13 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-//import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
-//import java.util.ArrayList;
-//import java.util.Arrays;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-//import org.json.JSONArray;
-//import org.json.JSONException;
-//import org.json.JSONObject;
 
 /**
  * This class makes an API call to https://query1.finance.yahoo.com/v10/finance/ and returns the last price for
@@ -103,39 +95,6 @@ public class YahooQuote {
 		return response.toString();
 	}
 	
-	/**
-	 * returns the last price 
-	 * @param json
-	 * @return the last price of the stock.
-	 * @throws IllegalStateException
-	 */
-//	public double getLastPrice(String symbol) throws IllegalStateException, IOException {
-//		
-//		String json = this.getData(symbol, "chart");
-//		//use regex to find the regularMarketPrice from the returned response. This will then be used to find the 
-//		//latest market price.
-//		Pattern pricePattern = Pattern.compile("regularMarketPrice\":(.+?),");
-//		Matcher matcher1 = pricePattern.matcher(json);
-//		matcher1.find();
-//		double price = Double.parseDouble(matcher1.group(1));
-//		
-//		//double lastPrice = Double.parseDouble(price);
-//
-//		return price;
-//	}
-	
-	/**
-	 * This method is used for getting a single data point for the desired symbol. The main use case is for
-	 * getting current price and feeding that in to the program but this offers more flexibility to get 
-	 * other fields from the end point.
-	 * @param symbol is the stock symbol you are looking up data for.
-	 * @param regex is the regex code to find the field within the data. e.g. "regularMarketPrice\":(.+?),"
-	 * @param dataType is the type of data you want to return. "chart" will get chart data, any other input
-	 * will return quote data.
-	 * @return a string of the data you are searching for.
-	 * @throws IllegalStateException
-	 * @throws IOException
-	 */
 	public String getField(String symbol, String regex, String dataType) throws IllegalStateException, IOException {
 		String data = this.getData(symbol, dataType);
 		Pattern fieldPattern = Pattern.compile(regex);
@@ -251,42 +210,4 @@ public class YahooQuote {
 		}
 	}
 	
-	/**
-	 * tester main to make sure the data is being read in correctly and usable
-	 * throughout the rest of the program
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		YahooQuote quote = new YahooQuote();
-		Scanner in = new Scanner(System.in);
-		
-		System.out.println("please put in a symbol");
-		String symbol = in.next().toUpperCase();
-		
-		boolean validSymbol = false;
-		while (validSymbol == false) {
-			try {
-				validSymbol = quote.isValidSymbol(symbol);
-				System.out.println(validSymbol);
-				if (validSymbol) {
-//					System.out.println(quote.getLastPrice(symbol));
-					//System.out.println("price: " + quote.getField(symbol, "regularMarketPrice\":(.+?),", "chart"));
-					quote.returnStockQuote(symbol);
-				}
-				else {
-					symbol = in.next();
-				}
-			} catch (IOException e) {
-				System.out.println("IOException. The symbol you input does not exist. Please input a valid symbol.");
-				e.printStackTrace();
-				symbol = in.next();
-			} catch (IllegalStateException e) {
-				System.out.println("IllegalStateException. The symbol you input does not trade. Please input a valid symbol.");
-				symbol = in.next();
-			}
-		}
-		
-		quote.indicesData();
-		in.close();
-	}
 }

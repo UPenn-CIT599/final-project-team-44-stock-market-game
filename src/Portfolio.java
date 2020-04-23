@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -130,10 +129,13 @@ public class Portfolio {
 			
 			System.out.println("You " + tradeAction + " " + absShares + " shares of " + stockSymbol + " at $" + price);
 					
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			//Try Catch is here in this method as a requirement for the price call to quote; however,
+			//the program already runs getValidSymbol in Trade class before calling tradeStock. The program
+			//cannot trigger this IOException.
+			} catch (IOException e) {
+				System.out.println("The symbol you input cannot return a price.");
+//				e.printStackTrace();
+			}
 	}
 
 	
@@ -154,8 +156,9 @@ public class Portfolio {
 	}
 	
 	/*
-	 * Updates all portfolio positions except for cash, which is updated in its own methos.
-	 * This will pull the latest price for each position and update all other position variables.	
+	 * Updates all portfolio positions except for cash, which is updated in its own method.
+	 * This will pull the latest price for each position and update all other position variables.
+	 * The portfolio is then displayed to the user.	
 	 */
 	public void updatePortfolio() {
 		for (String symbol : portfolio.keySet()) {
@@ -167,80 +170,5 @@ public class Portfolio {
 			}
 		}
 		this.printPort();
-	}
-
-//	main method for testing only, will be removed.
-	public static void main(String[] args) {
-		PositionFileIO posFile = new PositionFileIO();
-		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
-		Portfolio port;
-		try {
-			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfolio - Copy.csv"));
-			String continueTrading = "Y";
-			Scanner in = new Scanner(System.in);
-			port.updatePortfolio();
-			//port.printPort();
-			System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
-			continueTrading = in.next();
-			while (!continueTrading.toUpperCase().equals("N")) {
-				System.out.println("buy or sell?");
-				String action = in.next();
-				if (action.equals("buy")) {
-					port.tradeStock("AVGO", 100);
-					System.out.println();
-					port.updatePortfolio();
-					//port.printPort();
-				}
-				else if (action.equals("add")) {
-					port.tradeStock("AAPL", 100);
-					port.updatePortfolio();				
-				}
-				else if (action.equals("trim")) {
-					port.tradeStock("ABT", -100);
-					port.updatePortfolio();				
-				}
-				else {
-					System.out.println();
-					port.tradeStock("GE", -10);
-					System.out.println();
-					port.updatePortfolio();
-					//port.printPort();
-				}
-				System.out.println("Do you want to continue trading? N to stop, anything else to keep trading.");
-				continueTrading = in.next();
-			}
-			in.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-
-
-			//port.printPort();
-
-			/*
-		System.out.println();
-		port.printPort();
-		System.out.println();
-		port.buyStock("ABT", 100);
-		System.out.println();
-		port.printPort();
-		System.out.println();
-		port.liquidateStock("GE");
-		System.out.println();
-		port.printPort();
-			 */
-			/*
-		System.out.println(port.positionExists("APL"));
-		//test - should return false
-		System.out.println("Expect false: " + port.hasSufficientCash("AAPL", 1040));
-		//test - should return true
-		System.out.println("Expect true: " + port.hasSufficientCash("AAPL", 1030));
-		//test - should return true
-		System.out.println("Expect true: " + port.hasSufficientShares("GE", 10));
-		//test - should return fales
-		System.out.println("Expect false: " + port.hasSufficientShares("GE", 11));
-			 */
-		}
 	}
 }

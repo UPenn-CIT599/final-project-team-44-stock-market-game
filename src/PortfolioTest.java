@@ -1,72 +1,109 @@
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.FileNotFoundException;
-
+import java.io.IOException;
+import java.util.HashMap;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
 
 class PortfolioTest {
-	
-	Portfolio port;
+
+	HashMap<String, Position> testPrt;
+	Portfolio prt;
+	YahooQuote quote = new YahooQuote();
 	
 	public PortfolioTest() {
-		PositionFileIO posFile = new PositionFileIO();
-		//ArrayList<Position> portfolio = new ArrayList<Position>(); 
+		testPrt = new HashMap<String, Position>();
+		Position cash = new Position("USDCASH", 250000, 1);
+		Position aapl = new Position("AAPL", 1000, 220.73);
+		Position ibm = new Position("IBM", 1000, 117.52);
+		Position ge = new Position("GE", 1000, 17.28);
+		
+		testPrt.put("USDCASH", cash);
+		testPrt.put("AAPL", aapl);
+		testPrt.put("IBM", ibm);
+		testPrt.put("GE", ge);
+		
+		prt = new Portfolio(testPrt);
+	}
+
+	
+	//Tests hasSufficientShares for the following cases:
+	//you have sufficient shares: assertEquals true
+	//you don't have sufficient shares of a position you own: assertEquals false
+	//you check sufficient shares for a position you do not own: assertEquals false
+	@Test
+	void testSufficientShares() {
+		assertTrue(prt.hasSufficientShares("GE", 1000));
+		assertFalse(prt.hasSufficientShares("AAPL", 1001));
+		assertFalse(prt.hasSufficientShares("INTC", 1));
+	}
+	
+	//testing buying a new position and confirming the position is now in the portfolio.
+	@Test
+	void buyStock() {
+		prt.tradeStock("ZVZZT", 10);
+		assertTrue(prt.portfolio.containsKey("ZVZZT"));
+	}
+	
+	//testing liquidating a position and confirming the postiion is no longer in the portfolio.
+	@Test
+	void liquidateStock() {
+		prt.tradeStock("GE", -1000);
+		assertFalse(prt.portfolio.containsKey("GE"));
+	}
+	
+	//testing adding shares to an existing position and confirming the new share amount for the position.
+	@Test void addStock() {
+		prt.tradeStock("AAPL", 1);
+		assertEquals(1001, prt.portfolio.get("AAPL").getShares());
+	}
+	
+	//testing trimming shares from an existing position and confirming the new share amount for the position.
+	@Test void trimStock() {
+		prt.tradeStock("IBM", -1);
+		assertEquals(999, prt.portfolio.get("IBM").getShares());
+	}
+	
+	//Testing getting positions
+	@Test
+	void getPositionsTest() {
+		HashMap<String, Position> tst = prt.getPositions();
+		assertEquals(4, tst.size());
+	}
+	
+	//Testing cash Deposit
+	@Test
+	void cashDepositTest() {
+		prt.updateCash(1);
+		assertEquals(250001, prt.portfolio.get("USDCASH").getShares());
+	}
+	
+	//Testing cash withdrawal
+	@Test
+	void cashWithdrawalTest() {
+		prt.updateCash(-1);
+		assertEquals(249999, prt.portfolio.get("USDCASH").getShares());
+	}
+	
+
+	//Testing updatePort / printPort. Will test that the stock's last price
+	//matches what is printed by the port in updatePortfolio.
+	@Test
+	void updatePortTest() {
+		prt.updatePortfolio();
 		try {
-			port = new Portfolio(posFile.readpositionCSV("DummyStockPortfoliotest.txt"));
-		} catch (FileNotFoundException e) {
-			System.out.println("File does not exist.");
+			assertEquals(Double.parseDouble(quote.getField("AAPL", "regularMarketPrice\":(.+?),", "chart")), prt.portfolio.get("AAPL").getLastPrice());
+		} catch (IllegalStateException | IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	
+	//Tests the exception thrown in Position.class line 46
+	public final ExpectedException exception = ExpectedException.none();
 	@Test
-	void testSufficientSharesTrue() {
-		assertEquals(true, port.hasSufficientShares("GE", 7));
-	}
-	
-	@Test
-	void testSufficientSharesFalse() {
-		assertEquals(false, port.hasSufficientShares("GE", 11));
-	}
-	
-	@Test
-	void testHasSufficientCashTrue() {
-		assertEquals(true, port.hasSufficientCash("ABT", 100));
-	}
-	
-	@Test
-	void testHasSufficientCashFalse() {
-		assertEquals(false, port.hasSufficientCash("AAPL", 1500));
-	}
-	
-	@Test
-	void buyStock() {
-		port.buyStock("ZVZZT", 10);
-		assertEquals(true, port.portfolio.containsKey("ZVZZT"));
-	}
-	
-	@Test
-	void liquidateStock() {
-		port.sellStock("GE", 10);
-		assertEquals(false, port.portfolio.containsKey("GE"));
-	}
-	
-	@Test void addStock() {
-		double currShares = port.portfolio.get("AAPL").getShares();
-		port.buyStock("AAPL", 1);
-		assertEquals(currShares + 1, port.portfolio.get("AAPL").getShares());
-	}
-	
-	@Test void trimStock() {
-		double currShares = port.portfolio.get("AAPL").getShares();
-		port.sellStock("AAPL", 1);
-		assertEquals(currShares - 1, port.portfolio.get("AAPL").getShares());
-	}
-	
-	@Test
-	void getPositionsTest() {
-		assertEquals(5, port.portfolio.size());
+	public void exceptionTest() {
+		exception.expect(IOException.class);
+		prt.tradeStock("fake ticker", 1);
 	}
 	
 }
