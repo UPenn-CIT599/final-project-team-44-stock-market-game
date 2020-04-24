@@ -111,8 +111,7 @@ public class ChadTrade {
 					}
 					
 					//convert shares to string and format
-					double shsDouble = (double) Math.abs(shares);
-					String shsString = String.format("%,.0f", shsDouble);
+					String shsString = String.format("%,.0f",  (double) Math.abs(shares));
 					
 					//sharesOrCash is passed in to the string.
 					System.out.println("You do not have sufficient " + sharesOrCash + " to " + action + " " + 
