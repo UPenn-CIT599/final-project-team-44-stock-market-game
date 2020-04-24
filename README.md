@@ -1,7 +1,7 @@
 # MCIT_591_Stock_Market
 This program enables a user to simulate trades for US stocks and ETFs. The user can load a pre-existing portfolio file (.csv or .txt) or begin the program without an existing portrolio, then save their portfolio to a .csv or .txt. Trades made in the program throughout the day are then saved to the file and can be reloaded for trading day over day. The program will keep track of cash balances, provide real time pricing for updated positions and calculate returns. The user can also deposit or withdraw cash, or get a stock quote with helpful information before deciding to trade or not. When attempting to trade, the program will validate that you have sufficient shares to sell, or cash to purchase stock. It will also check to confirm you have a valid symbol and prompt the user to re-enter a symbol in the event it is invalid or does not exist.
 
-#Assumptions
+# Assumptions
 - The program supports long only (buy and sell, no shorting securities), US stock and ETF trading.
 - While the program pulls in live pricing intraday, the program will still run outside of market hours (9:30AM - 4:00PM EST) and allows the user to trade at the last close price.
 - The file loaded and saved must be a .csv or .txt file and it is assumed the file will have the correct data in respective columns. Rows where data is invalid will be skipped upon loading and the user will receive a noficiation if a row was skipped.
