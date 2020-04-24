@@ -56,12 +56,6 @@ class PositionTest {
 	public void testCashLastPrice() {
 		assertEquals(1, cash.getLastPrice());
 	}
-	
-	@Test
-	public void testSetShares() {
-		position.setShares(10);
-		assertEquals(10, position.getShares());
-	}
 
 	@Test
 	public void testToString() {
@@ -81,19 +75,6 @@ class PositionTest {
 		assertEquals(String.format("%,.2f", position.getPositionReturn()), stringArray[6]); //formatted return
 	}
 	
-	
-	//Test the setters in Position.class, which will be used to set cash values for deposits, withdrawals
-	//and after trades are complete.
-	@Test
-	public void testSetters() {
-		cash.setCostBasis(15);
-		cash.setCurrentValue(15);
-		cash.setShares(15);
-		
-		assertEquals(15, cash.getCostBasis());
-		assertEquals(15, cash.getCurrentValue());
-		assertEquals(15, cash.getShares());
-	}
 	
 	//Tests the exception thrown in Position.class line 46
 	public final ExpectedException exception = ExpectedException.none();

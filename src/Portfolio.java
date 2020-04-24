@@ -150,9 +150,8 @@ public class Portfolio {
 		Position cash = portfolio.get("USDCASH");
 		double currCash = cash.getShares();
 		double newCashValue = currCash + marketValue;
-		cash.setShares(newCashValue);
-		cash.setCostBasis(newCashValue);
-		cash.setCurrentValue(newCashValue);
+		cash = new Position("USDCASH", newCashValue, 1);
+		portfolio.put("USDCASH", cash);
 	}
 	
 	/*
