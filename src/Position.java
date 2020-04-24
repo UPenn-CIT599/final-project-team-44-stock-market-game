@@ -136,29 +136,5 @@ public class Position {
 				+ "\t" + String.format("%18s", currentValueOutput) 
 				+ "\t" + String.format("%10s",returnValueOutput));
 	}
-
-//	/**
-//	 * sets the number of shares for a position. Used to update cash.
-//	 * @param d
-//	 */
-//	public void setShares(double d) {
-//		this.shares = d;
-//	}
-//
-//	/**
-//	 * sets the cost basis for a position. Used to update cash.
-//	 * @param costBasis
-//	 */
-//	public void setCostBasis(double costBasis) {
-//		this.costBasis = costBasis;
-//	}
-//
-//	/**
-//	 * sets the current value of a positoin. Used to update cash.
-//	 * @param currentValue
-//	 */
-//	public void setCurrentValue(double currentValue) {
-//		this.currentValue = currentValue;
-//	}
 	
 }
