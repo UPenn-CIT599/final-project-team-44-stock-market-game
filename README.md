@@ -24,5 +24,8 @@ To Add the Jar to your build path Right click the Project > Build Path > Configu
 - YahooQuote: This class uses yahoo finance as a data source and pulls data for a stock or ETF in to the program. The current price will be used to update positions and the portfolio accordingly.
 
 # Screenshots
-Initial load
-![ScreenShot](https://i.postimg.cc/fk1yLjS0/Port-Display-and-Options.png)
+Initial Load:
+[![opening-Screen.png](https://i.postimg.cc/m2pFJ7k4/opening-Screen.png)](https://postimg.cc/RNfFn6wp)
+
+Portfolio Display and Options:
+[![Port-Display-and-Options.png](https://i.postimg.cc/Pr5wSStK/Port-Display-and-Options.png)](https://postimg.cc/fk1yLjS0)
