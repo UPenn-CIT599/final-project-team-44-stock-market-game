@@ -25,4 +25,4 @@ To Add the Jar to your build path Right click the Project > Build Path > Configu
 
 # Screenshots
 Initial load
-![ScreenShot](https://{url}) [url=https://postimg.cc/RNfFn6wp][img]https://i.postimg.cc/RNfFn6wp/opening-Screen.png[/img][/url]
+![ScreenShot](https://i.postimg.cc/fk1yLjS0/Port-Display-and-Options.png)
