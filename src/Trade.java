@@ -349,8 +349,7 @@ public class Trade {
 		System.out.println("Please enter the symbol of the stock you would like a quote on.");
 		stockSymbol = s.next().toUpperCase();
 		try {
-			quote.isValidSymbol(stockSymbol);
-			quote.returnStockQuote(stockSymbol);
+			quote.returnStockQuote(this.getValidSymbol(s, stockSymbol));
 		} catch (IllegalStateException e) {
 			System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
 		} catch (IOException e) {
