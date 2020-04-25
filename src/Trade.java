@@ -78,7 +78,7 @@ public class Trade {
 				//continue with trade options if we have enough shares/cash.
 				if (sufficientShares) {
 					//give the user the options to execute or cancel the trade
-					System.out.println("You have indicated you want to " + tradeAction + " " + shares + " shares of " + stockSymbol);
+					System.out.println("You have indicated you want to " + tradeAction + " " + Math.abs(shares) + " shares of " + stockSymbol);
 					System.out.println("Please choose and enter a number from the following:");
 					System.out.println("   1. execute trade");
 					System.out.println("   2. cancel trade");
