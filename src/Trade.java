@@ -32,7 +32,7 @@ public class Trade {
 		}
 		System.out.println("Please enter the stock symbol you would like to " + tradeAction + ".");
 		s.nextLine();
-		String stockSymbol = s.next().toUpperCase();
+		String stockSymbol = s.nextLine().toUpperCase();
 		stockSymbol = this.getValidSymbol(stockSymbol);
 		
 		double availableShares = 0;
@@ -52,7 +52,7 @@ public class Trade {
 			availableShares = port.portfolio.get("USDCASH").getShares();
 			availSharesString = "$" + String.format("%,.2f", availableShares);
 		}
-		if (!stockSymbol.equals("EXIT")) {
+		if (!stockSymbol.equals("*")) {
 			double price;
 			try {
 				price = Double.parseDouble(quote.getField(stockSymbol, "regularMarketPrice\":(.+?),", "chart"));
@@ -133,7 +133,7 @@ public class Trade {
 			System.out.println("You exited the stock selection without providing a valid symbol.");
 		}
 		return port;
-	}		
+	}				
 	
 	/**
 	 *  Local helper method to complete deposits and withdraws when the individual selects either option
@@ -183,27 +183,26 @@ public class Trade {
 		//enters while loop with validSymbol = false. Once the user enters a valid symbol, we will \
 		//exit the loop and return the valid symbol to the caller.
 		boolean validSymbol = false;
-		while (!validSymbol && !symbol.toUpperCase().equals("EXIT")) {
+		while (!validSymbol && !symbol.toUpperCase().equals("*")) {
 			try {
-				validSymbol = quote.isValidSymbol(symbol);
+				validSymbol = quote.isValidSymbol(symbol.toUpperCase());
 				if (!validSymbol) {
-					symbol = s.next().toUpperCase();
+					s.nextLine();
+					symbol = s.nextLine().toUpperCase();
 					System.out.println(symbol);
 				}
 				//if the user typed in exit, it allows them to exit this loop and return to the options menu.
-				if (symbol.toUpperCase().equals("EXIT")) {
-					return "EXIT";
+				if (symbol.toUpperCase().equals("*")) {
+					return "*";
 				}
 			} catch (IOException e) {
 				System.out.println("IOException. The symbol you input does not exist. "
-						+ "Please input a valid symbol to continue or type \"exit\" to return to the options menu.");
-				// e.printStackTrace();
-				symbol = s.next().toUpperCase();
+						+ "Please input a valid symbol to continue or type \"*\" to return to the options menu.");
+				symbol = s.nextLine().toUpperCase();
 			} catch (IllegalStateException e) {
 				System.out.println("IllegalStateException. The symbol you input does not trade. "
-						+ "Please input a valid symbol to continue or type \"exit\" to return to the options menu.");
-				// e.printStackTrace();
-				symbol = s.next().toUpperCase();
+						+ "Please input a valid symbol to continue or type \"*\" to return to the options menu.");
+				symbol = s.nextLine().toUpperCase();
 			}
 		}
 		return symbol;
