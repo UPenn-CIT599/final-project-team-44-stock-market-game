@@ -150,6 +150,7 @@ public class YahooQuote {
 
 		//leverages the getField method to gather all the required data points to print the quote
 		//information for the symbol.
+		String sym = this.getField("symbol\":\"(.+?)\"", quoteData);
 		String price = "Current Price: " + numberFormat.format(Double.parseDouble(this.getField(regexPrefix + "regularMarketPrice" + regexSuffix, quoteData)));
 		String close = "Close: " + numberFormat.format(Double.parseDouble(this.getField(regexPrefix + "regularMarketPreviousClose" + regexSuffix, quoteData)));
 		String open = "Open: " + numberFormat.format(Double.parseDouble(this.getField(regexPrefix + "regularMarketOpen" + regexSuffix, quoteData)));
@@ -163,7 +164,7 @@ public class YahooQuote {
 		//			String forwardEPS = "Forward EPS: " + String.format("%.2f", Double.parseDouble(this.getField(regexPrefix + "forwardEps" + regexSuffix, quoteData)));
 
 		//prints the standard quote information to display to the user.
-		System.out.println(symbol.toUpperCase() + ": " + name);
+		System.out.println(sym.toUpperCase() + ": " + name);
 		System.out.println();
 		System.out.println(dayRange);
 		System.out.println();
