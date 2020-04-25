@@ -8,7 +8,7 @@ import java.util.*;
  *
  */
 
-public class Portfolio {
+public class Portfolio implements FinancialActivity{
 	
 	/**
 	 * local variables to aid in the methods within the class
@@ -83,8 +83,8 @@ public class Portfolio {
 	 * @param symbol
 	 * @param shares
 	 */
-	
-	public void tradeStock(String symbol, double shares) {
+	@Override
+	public void buySell(String symbol, double shares) {
 		try {
 			Position p;
 			String stockSymbol = symbol.toUpperCase();
@@ -145,7 +145,7 @@ public class Portfolio {
 	 * buys will subtract from the cash while sells will add to the cash
 	 * @param marketValue
 	 */
-	
+	@Override
 	public void updateCash(double marketValue) {
 		Position cash = portfolio.get("USDCASH");
 		double currCash = cash.getShares();
