@@ -244,12 +244,10 @@ public class Trade {
 	 * that is able to be printed at the end of the trading session
 	 * @return
 	 */
-	private String getValidFileName() {
-			String fileName = null;		
+	private String getValidFileName(String fileName) {
 			boolean goodFile = false;
 		    while (!goodFile) {
 		    	try {
-		    		s.nextLine();
 		    		fileName = s.nextLine();
 		    		File f = new File(fileName);
 		    		f.getCanonicalPath();
@@ -257,8 +255,6 @@ public class Trade {
 		    	}
 		    	catch (IOException e) {
 		    		System.out.println("You have entered an invalid file name. Please enter a valid file name.");
-//		    		s.nextLine();
-		    		fileName = s.nextLine();
 		    	}
 		    }
 		    return fileName;
@@ -350,7 +346,8 @@ public class Trade {
 		// first asks the user to enter in a filename and stores the value 
 		// so that we can properly print it out later
 		System.out.println("What would you like to name your output file?");
-		fileName = this.getValidFileName();
+		fileName = s.nextLine();
+		this.getValidFileName(fileName);
 		
 		System.out.println("How much would you like to deposit?");
 		amount = this.getValidDouble(0.01, Double.MAX_VALUE);
