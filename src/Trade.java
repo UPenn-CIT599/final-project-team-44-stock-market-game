@@ -457,10 +457,13 @@ public class Trade {
 					s.nextLine();
 					fileName = s.nextLine().toLowerCase();
 					
-					portfolio = this.getValidFile(fileName);
-					portfolio.updatePortfolio();
-					this.options(portfolio);
-					break;
+					if (!fileName.toUpperCase().contentEquals("EXIT")) {
+						portfolio = this.getValidFile(fileName);
+						portfolio.updatePortfolio();
+						this.options(portfolio);
+						break;
+					}
+					
 				case 2:
 					/**
 					 * option if individual does not have a file to read from/initial portfolio;
