@@ -40,26 +40,26 @@ class PortfolioTest {
 	//testing buying a new position and confirming the position is now in the portfolio.
 	@Test
 	void buyStock() {
-		prt.tradeStock("ZVZZT", 10);
+		prt.buySell("ZVZZT", 10.0);
 		assertTrue(prt.portfolio.containsKey("ZVZZT"));
 	}
 	
 	//testing liquidating a position and confirming the postiion is no longer in the portfolio.
 	@Test
 	void liquidateStock() {
-		prt.tradeStock("GE", -1000);
+		prt.buySell("GE", -1000);
 		assertFalse(prt.portfolio.containsKey("GE"));
 	}
 	
 	//testing adding shares to an existing position and confirming the new share amount for the position.
 	@Test void addStock() {
-		prt.tradeStock("AAPL", 1);
+		prt.buySell("AAPL", 1);
 		assertEquals(1001, prt.portfolio.get("AAPL").getShares());
 	}
 	
 	//testing trimming shares from an existing position and confirming the new share amount for the position.
 	@Test void trimStock() {
-		prt.tradeStock("IBM", -1);
+		prt.buySell("IBM", -1);
 		assertEquals(999, prt.portfolio.get("IBM").getShares());
 	}
 	
@@ -103,7 +103,7 @@ class PortfolioTest {
 	@Test
 	public void exceptionTest() {
 		exception.expect(IOException.class);
-		prt.tradeStock("fake ticker", 1);
+		prt.buySell("fake ticker", 1);
 	}
 	
 }
