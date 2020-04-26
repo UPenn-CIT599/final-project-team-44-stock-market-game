@@ -11,6 +11,7 @@ In order to run the program, you need to add the Jar file to its own build path 
 
 To Add the Jar to your build path Right click the Project > Build Path > Configure build path> Select Libraries tab > Click Add External Libraries > Select the Jar file.
 
+You can use StockPortfolio.csv or StockPortfolio.txt to test program functionality. Please do not edit StockPortfolioTest.csv as that is being used for JUnit tests that require data from the file.
 
 # Key Classes
 - PositionFileIO: This will load in the user's portfolio from a file or create a new file to track the user's portfolio. Trades will take place within the program and update the portfolio. When the user is done with their trading sessoin, their updated portfolio is written back out to their portfolio file to be used for the next trading session or trading day.
@@ -22,6 +23,8 @@ To Add the Jar to your build path Right click the Project > Build Path > Configu
 - Trade: The trade class will be used to interact with the user and get the trade instructions. The trade instructions will then permeate throughout the program, updating postiions and the portfolio accordingly.
 
 - YahooQuote: This class uses yahoo finance as a data source and pulls data for a stock or ETF in to the program. The current price will be used to update positions and the portfolio accordingly.
+
+- FinancialActivity: Interface that can be used in future iterations to expand valid financial instruments for the program.
 
 # Screenshots
 Initial Load:
