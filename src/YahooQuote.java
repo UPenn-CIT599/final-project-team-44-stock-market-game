@@ -49,7 +49,8 @@ public class YahooQuote {
 		}
 		System.out.println("Quote Type: " + instrumentType);
 		System.out.println("Currency: " + currency);
-		System.out.println("Quote Type must be ETF or EQUITY and currency must be USD. Please input a symbol that satisfies these requirements.");
+		System.out.println("Quote Type must be ETF or EQUITY and currency must be USD. Please input a symbol that satisfies these requirements. "
+				+ "or input \"*\" to exit.");
 		return false;
 	}
 	

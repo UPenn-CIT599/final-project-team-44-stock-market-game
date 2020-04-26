@@ -133,7 +133,7 @@ public class Trade {
 			System.out.println("You exited the stock selection without providing a valid symbol.");
 		}
 		return port;
-	}				
+	}	
 	
 	/**
 	 *  Local helper method to complete deposits and withdraws when the individual selects either option
@@ -152,10 +152,12 @@ public class Trade {
 			if(port == null) {
 				// ask individual for a file name so we can write the file out
 				port = this.initialCashDeposit();
+				System.out.println("You deposited " + "$" + String.format("%,.2f", amount));
 				port.updatePortfolio();
 				
 			} else {
 				port.updateCash(amount); // updates the cash in the new portfolio to what the user input
+				System.out.println("You deposited " + " $" + String.format("%,.2f", amount));
 				port.updatePortfolio();
 			}
 			
@@ -165,6 +167,8 @@ public class Trade {
 			amount = getValidDouble(0.01, Double.MAX_VALUE);
 			if(port.hasSufficientShares("USDCASH", amount) == true) {
 				port.updateCash(-amount);
+				System.out.println("You withdrew " + "$" + String.format("%,.2f", amount));
+				
 				port.updatePortfolio();
 			} else {
 				System.out.println("You do not have enough cash to withdraw.");
@@ -187,9 +191,7 @@ public class Trade {
 			try {
 				validSymbol = quote.isValidSymbol(symbol.toUpperCase());
 				if (!validSymbol) {
-					s.nextLine();
 					symbol = s.nextLine().toUpperCase();
-					System.out.println(symbol);
 				}
 				//if the user typed in exit, it allows them to exit this loop and return to the options menu.
 				if (symbol.toUpperCase().equals("*")) {
@@ -243,7 +245,7 @@ public class Trade {
 	 * that is able to be printed at the end of the trading session
 	 * @return
 	 */
-	private String getValidFileName(String fileName) {
+	private String getValidFileName() {
 			boolean goodFile = false;
 		    while (!goodFile) {
 		    	try {
@@ -326,11 +328,11 @@ public class Trade {
 			try {
 				option = s.nextDouble();
 				if (option < lowOption || option > highOption) {
-					System.out.println("Invalid selection. Please enter a valid double greater than 0.");
+					System.out.println("Invalid selection. Please enter a number greater than or equal to a penny (.01).");
 					s.nextLine();					
 				}
 			} catch (InputMismatchException e) {
-				System.out.println("InputMismatchException. Please input a double greater than 0.");
+				System.out.println("InputMismatchException. Please enter a number greater than or equal to a penny (.01).");
 				s.nextLine();
 			}  
 		}
@@ -345,8 +347,8 @@ public class Trade {
 		// first asks the user to enter in a filename and stores the value 
 		// so that we can properly print it out later
 		System.out.println("What would you like to name your output file?");
-		fileName = s.nextLine();
-		this.getValidFileName(fileName);
+		s.nextLine();
+		fileName = this.getValidFileName();
 		
 		System.out.println("How much would you like to deposit?");
 		amount = this.getValidDouble(0.01, Double.MAX_VALUE);
@@ -365,15 +367,21 @@ public class Trade {
 	 * @return
 	 */
 	private void getStockQuote() {
-		System.out.println("Please enter the symbol of the stock you would like a quote on.");
+		System.out.println("Please enter the symbol of the stock you would like a quote on"
+				+ " or type \"*\" to exit the quote function.");
 		s.nextLine();
 		stockSymbol = s.nextLine().toUpperCase();
-		try {
-			quote.returnStockQuote(this.getValidSymbol(stockSymbol));
-		} catch (IllegalStateException e) {
-			System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
-		} catch (IOException e) {
-			System.out.println("The stock symbol entered does not exist.  Please enter a new stock symbol");
+		if (!stockSymbol.equals("*")) {
+			try {
+				quote.returnStockQuote(this.getValidSymbol(stockSymbol));
+			} catch (IllegalStateException e) {
+				System.out.println("You exited the quote function.");
+			} catch (IOException e) {
+				System.out.println("You exited the quote function.");
+			}
+		}
+		else {
+			System.out.println("You exited the quote function.");
 		}
 	}
 	
