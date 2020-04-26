@@ -121,8 +121,7 @@ public class Position {
 	 */
 	public String toString() {		
 		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-		String sharesOutput = numberFormat.format(getShares());
+		String sharesOutput =  String.format("%,.2f", getShares());
         String avgCostOutput = dollarFormat.format(getAverageCost());
         String lastPriceOutput = dollarFormat.format(getLastPrice());
         String costBasisOutput = dollarFormat.format(getCostBasis());
