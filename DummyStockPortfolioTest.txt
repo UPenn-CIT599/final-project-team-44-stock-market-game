@@ -1,2 +1,0 @@
-Symbol	Shares	AverageCost	LastPrice	CostBasis	CurrentValue	Return
-AAPL	  1000	     120.73	   274.74	   120730	      274740	 1.276
