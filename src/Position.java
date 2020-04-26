@@ -121,16 +121,17 @@ public class Position {
 	 */
 	public String toString() {		
 		NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(Locale.US);
-		String sharesOutput =  String.format("%,.2f", getShares());
+		NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+		String sharesOutput =  numberFormat.format(getShares());
         String avgCostOutput = dollarFormat.format(getAverageCost());
         String lastPriceOutput = dollarFormat.format(getLastPrice());
         String costBasisOutput = dollarFormat.format(getCostBasis());
         String currentValueOutput = dollarFormat.format(getCurrentValue());
         String returnValueOutput = String.format("%,.2f", getPositionReturn());
 		return (String.format("%10s",symbol) 
-				+ "\t"  + String.format("%10s",sharesOutput) 
-				+ "\t" + String.format("%10s",avgCostOutput) 
-				+ "\t"+ String.format("%10s",lastPriceOutput) 
+				+ "\t"  + String.format("%13s",sharesOutput) 
+				+ "\t" + String.format("%13s",avgCostOutput) 
+				+ "\t"+ String.format("%13s",lastPriceOutput) 
 				+ "\t" + String.format("%18s", costBasisOutput) 
 				+ "\t" + String.format("%18s", currentValueOutput) 
 				+ "\t" + String.format("%10s",returnValueOutput));

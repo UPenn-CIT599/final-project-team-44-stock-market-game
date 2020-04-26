@@ -43,9 +43,9 @@ public class Portfolio implements FinancialActivity{
 	
 	public void printPort() {
 		System.out.println(String.format("%10s","SYMBOL") 
-		+ "\t" + String.format("%10s", "SHARES") 
-		+ "\t" + String.format("%10s", "AVG COST") 
-		+ "\t" + String.format("%10s", "LAST PRICE") 
+		+ "\t" + String.format("%13s", "SHARES") 
+		+ "\t" + String.format("%13s", "AVG COST") 
+		+ "\t" + String.format("%13s", "LAST PRICE") 
 		+ "\t" + String.format("%18s","COST BASIS") 
 		+ "\t" + String.format("%18s", "CURR VALUE") 
 		+ "\t" + String.format("%10s", "RETURN (%)"));
