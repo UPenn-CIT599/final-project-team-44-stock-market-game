@@ -1,0 +1,36 @@
+Team 44 Summary: Stock Market Game
+
+Description
+Our team’s final project simulates a brokerage account where an individual can buy stocks, sell stocks, get a stock quote, deposit funds, and/or withdraw funds.  The user has the option to read in a file or create a new one within the program.  When the user exits the program the current portfolio is displayed and printed to their file.  The program pulls stock information from yahoo finance to be used throughout the program.
+
+Overview of Design
+Our project was designed with the following classes which form the basis of our design:
+Class
+Description
+Main
+Acts as a runner to run the trading session
+Trade
+Interacts with the user and calls other classes and methods to run the program
+FinancialActivity
+Interface used by the Portfolio class
+Portfolio
+Establishes a user’s portfolio and updates the portfolio when the user buys/sells. Implements the FinancialActivity interface.
+Position
+Creates a position-a position is a stock or USDCASH
+YahooQuote
+Makes an API call to https://query1.finance.yahoo.com/v10/finance/ and returns the last price for the desired symbol
+
+Work Breakdown
+This project was a collaborative effort. Throughout the project each team  member helped each other with several joint design sessions held.  The primary breakout is as follows:
+
+Chad Ingalls: 
+	Responsible Classes: YahooQuote, Portfolio
+	Additional:  Designed functionality, significant input to other classes (e.g., Trade, Position), wrote majority of JUnit tests
+Chris Christou: 
+	Responsible Classes: PostionFileIO, Position
+	Additional: Facilitated weekly and ad hoc team meetings, contributed to Trade class, wrote FinancialActivity interface
+Jarod Opheim:  
+	Responsible Classes: Trade, Main
+	Additional: Drafted user interaction, Integrated changes, input into Portfolio and Position classes.
+
+GitHub Link: https://github.com/UPenn-CIT599/final-project-team-44-stock-market-game.git
