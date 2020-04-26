@@ -375,9 +375,9 @@ public class Trade {
 			try {
 				quote.returnStockQuote(this.getValidSymbol(stockSymbol));
 			} catch (IllegalStateException e) {
-				System.out.println("You exited the quote function.");
+				System.out.println("The symbol you entered is not a US stock, you exited the quote function..");
 			} catch (IOException e) {
-				System.out.println("You exited the quote function.");
+				System.out.println("The symbol you entered is not a US stock, you exited the quote function..");
 			}
 		}
 		else {
